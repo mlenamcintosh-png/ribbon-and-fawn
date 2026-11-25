@@ -1,5 +1,14 @@
 const finds = [
   {
+    id: 'cream-leg-warmers',
+    name: 'Cream Leg Warmers',
+    category: 'Accessories',
+    photos: [
+      { src: 'accessory-photos/224219.webp', alt: 'Cream leg warmers styled with lace tights and bow shoes' },
+      { src: 'accessory-photos/224221.webp', alt: 'Cream leg warmers in a pink and cream outfit' }
+    ]
+  },
+  {
     id: 'pink-bow-platform-heels',
     name: 'Pink Bow Platform Heels',
     category: 'Shoes',
