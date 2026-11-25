@@ -5,7 +5,8 @@ const finds = [
     category: 'Tops',
     photos: [
       { src: 'top-photos/pink-knit-231941.webp', alt: 'Front view of the pink off-shoulder knit sweater with a lace collar and bow' },
-      { src: 'top-photos/pink-knit-232329.webp', alt: 'Side view showing the sweater’s lace trim and ribbed sleeve' }
+      { src: 'top-photos/pink-knit-232329.webp', alt: 'Side view showing the sweater’s lace trim and ribbed sleeve' },
+      { src: 'top-photos/pink-knit-product.webp', alt: 'Pink lace-trim knit sweater on a white background' }
     ]
   },
   {
