@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
+<title>Ribbon &amp; Fawn</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<div class="lace" aria-hidden="true"></div>
+<div class="book">
+<header class="masthead">
+  <span class="ornament" aria-hidden="true">✧ ♡ ✧</span>
+  <p class="brand">Ribbon <i>&amp;</i> Fawn</p>
+  <p class="tagline">Shopping finds &amp; journal notes</p>
+</header>
+<div class="spread">
+<aside aria-label="Scrapbook sidebar">
+  <div class="sidebar-card">
+    <h2>Navigation</h2>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#finds">Shopping finds</a>
+      <a href="#journal">Journal</a>
+      <a href="#wishlist">Wishlist <span id="count">0</span></a>
+    </nav>
+  </div>
+  <div class="sidebar-card note">
+    <h2>On the wishlist</h2>
+    <p>Tap the heart on any find to save it for later.</p>
+  </div>
+  <div class="sidebar-card postcard">
+    <div class="bow small" aria-hidden="true"><b></b><i></i><span></span></div>
+    <p>Made with love</p>
+  </div>
+</aside>
+<main id="content" tabindex="-1">
+  <section id="home" data-page>
+    <div class="welcome framed">
+      <div class="scallop" aria-hidden="true"></div>
+      <div class="bow-wrap" aria-hidden="true"><span>✧</span><div class="bow"><b></b><i></i><span></span></div><span>✧</span></div>
+      <h1>Welcome to my little corner</h1>
+      <p>A scrapbook for pretty finds, cozy corners, and all the little things I’m tempted to add to my cart.</p>
+      <a class="ribbon-button" href="#finds">Browse the finds</a>
+    </div>
+    <section class="framed shelf" aria-labelledby="shelf-title">
+      <h2 id="shelf-title">From the shopping list</h2>
+      <div id="featured" class="cards"></div>
+    </section>
+    <div class="framed journal-teaser">
+      <span aria-hidden="true">♡</span>
+      <div><h2>Little ways to dress up a vanity</h2><a href="#journal">Read the journal</a></div>
+    </div>
+  </section>
+  <section id="finds" class="framed inner" data-page hidden>
+    <h1>Shopping finds</h1>
+    <p>A sample collection for the first edition of the scrapbook.</p>
+    <div class="filters" aria-label="Filter finds">
+      <button type="button" data-filter="All" aria-pressed="true">All</button>
+      <button type="button" data-filter="Accessories" aria-pressed="false">Accessories</button>
+      <button type="button" data-filter="Room" aria-pressed="false">Room</button>
+    </div>
+    <div id="catalog" class="cards"></div>
+  </section>
+  <section id="journal" class="framed inner" data-page hidden>
+    <h1>Journal</h1>
+    <article>
+      <h2>Little ways to dress up a vanity</h2>
+      <p>Start with one corner. Set out a small tray for the jewellery you wear most, tuck your daily makeup into a pouch, and leave a little clear room for getting ready.</p>
+      <p>A pink ribbon around a brush cup or a tiny dish for your rings can make the whole spot feel more like you.</p>
+    </article>
+    <details><summary>Three things I look for in a cute accessory</summary><p>Can I wear it with clothes I already own? Will it be comfortable all day? Would I still like it if it came in a different colour?</p></details>
+  </section>
+  <section id="wishlist" class="framed inner" data-page hidden>
+    <h1>Wishlist</h1>
+    <p id="empty">Your wishlist is empty. <a href="#finds">Browse the finds</a> to save a favourite.</p>
+    <div id="saved" class="cards"></div>
+  </section>
+</main>
+</div>
+<footer>Ribbon &amp; Fawn <span aria-hidden="true">♡</span></footer>
+</div>
+</body>
+</html>
