@@ -26,7 +26,7 @@ const finds = [
     photos: [
       { src: 'accessory-photos/224219.webp', alt: 'Cream leg warmers styled with lace tights and bow shoes' },
       { src: 'accessory-photos/224221.webp', alt: 'Cream leg warmers in a pink and cream outfit' },
-      { src: 'accessory-photos/cream-leg-warmers-white-background.webp', alt: 'Pair of cream ribbed leg warmers on a plain background' }
+      { src: 'accessory-photos/leg-warmers-white.webp', alt: 'Pair of white ribbed leg warmers on a white background' }
     ]
   },
   {
