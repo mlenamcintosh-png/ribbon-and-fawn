@@ -25,7 +25,8 @@ const finds = [
     category: 'Accessories',
     photos: [
       { src: 'accessory-photos/224219.webp', alt: 'Cream leg warmers styled with lace tights and bow shoes' },
-      { src: 'accessory-photos/224221.webp', alt: 'Cream leg warmers in a pink and cream outfit' }
+      { src: 'accessory-photos/224221.webp', alt: 'Cream leg warmers in a pink and cream outfit' },
+      { src: 'accessory-photos/cream-leg-warmers-product.webp', alt: 'Pair of cream ribbed leg warmers on a plain background' }
     ]
   },
   {
