@@ -4,9 +4,9 @@ const finds = [
     name: 'White Stockings',
     category: 'Accessories',
     photos: [
-      { src: 'accessory-photos/224245.webp', alt: 'Plain white stockings on a white background' },
       { src: 'accessory-photos/224243.webp', alt: 'White stockings styled with a pink plaid skirt and white boots while seated' },
-      { src: 'accessory-photos/224244.webp', alt: 'Standing outfit view with white stockings, a pink plaid skirt, and bow details' }
+      { src: 'accessory-photos/224244.webp', alt: 'Standing outfit view with white stockings, a pink plaid skirt, and bow details' },
+      { src: 'accessory-photos/224245.webp', alt: 'Plain white stockings on a white background' }
     ]
   },
   {
@@ -109,7 +109,7 @@ function renderGallery(item) {
 function renderCards(container, items) {
   container.innerHTML = items.map(item => {
     const isSaved = saved.has(item.id);
-    return `<article class="card">
+    return `<article class="card" data-find="${item.id}">
       ${item.photos ? renderGallery(item) : `<div class="swatch" style="--swatch:${item.color}" aria-hidden="true">${item.symbol}</div>`}
       <h3>${item.name}</h3>
       <p>${item.category}</p>
