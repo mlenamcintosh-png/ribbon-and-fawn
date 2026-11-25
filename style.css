@@ -90,3 +90,5 @@ body{padding-bottom:36px}
 .dressing-note,#dressing-status{font-size:.875rem}
 #dressing-status{position:sticky;bottom:0;margin:0;background:var(--cream)}
 @media(max-width:760px){.dressing-layout{grid-template-columns:1fr}}
+
+.find-gallery img[src="accessory-photos/224221.webp"]{object-position:center bottom}
