@@ -1,5 +1,15 @@
 const finds = [
   {
+    id: 'pink-bow-platform-heels',
+    name: 'Pink Bow Platform Heels',
+    category: 'Shoes',
+    photos: [
+      { src: 'shoe-photos/224155.webp', alt: 'Pink platform heels with bows and lace-trimmed straps' },
+      { src: 'shoe-photos/224157.webp', alt: 'Front view of the pink platforms with crossed straps' },
+      { src: 'shoe-photos/224159.webp', alt: 'Close-up of the heart buckles and block heels' }
+    ]
+  },
+  {
     id: 'pink-ballet-flats',
     name: 'Pink ballet flats',
     category: 'Shoes',
