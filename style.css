@@ -19,7 +19,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sidebar-card{margin-bottom:14px;padding:7px;box-shadow:inset 0 0 0 3px #fae8ef}
 .sidebar-card h2{margin:0;padding:5px;text-align:center;background:var(--pink);font-size:.95rem}
 nav{padding:5px 0}
-nav a{display:block;padding:6px 7px;font-size:.93rem;text-decoration:none}
+nav a{font-family:'Fraunces',Georgia,serif;font-weight:700;display:block;padding:6px 7px;font-size:.93rem;text-decoration:none}
 nav a::before{content:'♡';margin-right:7px}
 nav a:hover,nav a[aria-current=page]{background:#fae9f0;text-decoration:underline}
 #count{float:right}
@@ -32,16 +32,8 @@ h2{font-size:1.25rem;margin:0 0 13px}
 .scallop{position:absolute;inset:0 0 auto;height:16px;background:radial-gradient(ellipse at 50% 0,#f9e0eb 59%,#ddb2c5 62%,transparent 66%) 0 0/33px 17px repeat-x}
 .welcome p{max-width:380px;margin:0 auto 19px}
 .bow-wrap{display:flex;align-items:center;justify-content:center;gap:14px;color:#aa6687}
-.bow{position:relative;display:inline-block;width:86px;height:64px;vertical-align:middle}
-.bow b,.bow i{position:absolute;top:12px;width:38px;height:25px;background:linear-gradient(#ffedf4,#e8abc5);border:1px solid #b97596;box-shadow:inset 0 0 0 3px #fff6fa8c}
-.bow b{left:7px;border-radius:55% 40% 40% 55%;transform:rotate(16deg)}
-.bow i{right:7px;border-radius:40% 55% 55% 40%;transform:rotate(-16deg)}
-.bow span{position:absolute;top:20px;left:37px;width:12px;height:14px;background:#e9abc5;border:1px solid #ad6d8e;border-radius:4px}
-.bow::before,.bow::after{content:'';position:absolute;top:27px;width:12px;height:27px;background:#e8abc5;border:1px solid #b97596}
-.bow::before{left:29px;transform:rotate(29deg)}
-.bow::after{right:29px;transform:rotate(-29deg)}
-.small{transform:scale(.72);height:50px}
-.ribbon-button,.filters button{display:inline-block;background:var(--pink);border:3px double #c58da8;padding:5px 17px;text-decoration:none;color:var(--berry)}
+.postcard-bow{display:block;margin:6px auto 0}
+.ribbon-button,.filters button{font-family:'Fraunces',Georgia,serif;font-weight:700;display:inline-block;background:var(--pink);border:3px double #c58da8;padding:5px 17px;text-decoration:none;color:var(--berry)}
 .ribbon-button:hover,.filters button[aria-pressed=true]{background:#f0c9db}
 .shelf,.inner{padding:16px}
 .shelf,.journal-teaser{margin-top:13px}
