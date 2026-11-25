@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=shopping-bag">
+<link rel="stylesheet" href="style.css?v=dressing-room">
 <script src="app.js?v=shopping-bag" defer></script>
+<script src="dressing-room.js?v=1" defer></script>
 </head>
 <body>
 <div class="lace" aria-hidden="true"></div>
@@ -23,6 +24,7 @@
     <nav>
       <a href="#home">Home</a>
       <a href="#finds">Shopping finds</a>
+      <a href="#dressing-room">Dressing Room</a>
       <a href="#journal">Journal</a>
       <a href="#bag">My bag <span id="bag-count">0</span></a>
       <a href="#suggestions">Suggestions</a>
@@ -101,6 +103,42 @@
       <button class="ribbon-button" type="submit">Prepare suggestion email</button>
       <p id="suggestion-status" role="status"></p>
     </form>
+  </section>
+  <section id="dressing-room" class="framed inner" data-page hidden>
+    <div class="dressing-header">
+      <h1>Ribbon &amp; Fawn Dressing Room</h1>
+      <p>Mix pieces from your closet with Ribbon &amp; Fawn finds.</p>
+    </div>
+    <div class="dressing-layout">
+      <div class="closet-panel">
+        <h2>My closet</h2>
+        <form id="closet-form">
+          <label>Piece name <input name="name" maxlength="60" required placeholder="Cream cardigan"></label>
+          <label>Category <select name="category">
+            <option>Tops</option><option>Bottoms</option><option>Dresses</option>
+            <option>Shoes</option><option>Accessories</option>
+          </select></label>
+          <label>Photo <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required></label>
+          <button class="ribbon-button">Add to my closet</button>
+        </form>
+        <div id="closet-pieces" class="dressing-pieces"></div>
+        <h2>Style with shop finds</h2>
+        <div id="dressing-finds" class="dressing-pieces"></div>
+      </div>
+      <div class="outfit-panel">
+        <h2>My outfit board</h2>
+        <p id="outfit-empty">Choose a piece to start your outfit.</p>
+        <div id="outfit-board" class="dressing-pieces"></div>
+        <form id="outfit-form">
+          <label>Outfit name <input name="name" maxlength="60" required placeholder="Birthday brunch"></label>
+          <button class="ribbon-button">Save outfit</button>
+        </form>
+        <h2>Saved outfits</h2>
+        <ul id="outfit-saves"></ul>
+      </div>
+    </div>
+    <p class="dressing-note">Closet photos and saved outfits stay in this browser.</p>
+    <p id="dressing-status" role="status"></p>
   </section>
 </main>
 </div>

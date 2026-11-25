@@ -71,3 +71,22 @@ footer{margin-top:16px;text-align:center;padding:6px;font-size:.9rem}
 .fawn-panel{padding:0 12px 6px}
 .fawn-panel button{margin:0 0 4px}
 body{padding-bottom:36px}
+
+.dressing-header{padding:14px;text-align:center;border:3px double var(--line);background:repeating-linear-gradient(90deg,#fff9f9 0 14px,#fdf0f4 14px 28px)}
+.dressing-header p{margin:0}
+.dressing-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.closet-panel,.outfit-panel{min-width:0;padding:12px;border:3px double var(--line);background:var(--cream)}
+.outfit-panel{background:radial-gradient(circle,#efd3dd .7px,transparent 1px) 0 0/15px 15px,var(--cream)}
+#dressing-room form{display:grid;gap:8px;margin-bottom:15px}
+#dressing-room input,#dressing-room select{display:block;width:100%;min-width:0;padding:5px;font:inherit;color:inherit;border:1px solid var(--line);background:var(--cream)}
+.dressing-pieces{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.dressing-piece{display:grid;align-content:start;gap:4px;min-width:0;padding:5px;border:1px solid var(--line);background:#fff8f9;overflow-wrap:anywhere;font-size:.875rem}
+.dressing-piece img{display:block;width:100%;aspect-ratio:1;object-fit:contain;background:#fae9f0}
+.dressing-piece button,#outfit-saves button{border:1px solid var(--line);background:var(--pink);color:var(--berry);font-family:'Fraunces',Georgia,serif}
+.dressing-piece button:hover,#outfit-saves button:hover{background:#f0c9db}
+#outfit-saves{padding-left:18px}
+#outfit-saves li{margin-bottom:6px;overflow-wrap:anywhere}
+#outfit-saves button{margin-right:5px}
+.dressing-note,#dressing-status{font-size:.875rem}
+#dressing-status{position:sticky;bottom:0;margin:0;background:var(--cream)}
+@media(max-width:760px){.dressing-layout{grid-template-columns:1fr}}
