@@ -1,5 +1,14 @@
 const finds = [
   {
+    id: 'pink-lace-knit-sweater',
+    name: 'Pink Lace-Trim Knit Sweater',
+    category: 'Tops',
+    photos: [
+      { src: 'top-photos/pink-knit-231941.webp', alt: 'Front view of the pink off-shoulder knit sweater with a lace collar and bow' },
+      { src: 'top-photos/pink-knit-232329.webp', alt: 'Side view showing the sweater’s lace trim and ribbed sleeve' }
+    ]
+  },
+  {
     id: 'white-stockings',
     name: 'White Stockings',
     category: 'Accessories',
