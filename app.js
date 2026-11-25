@@ -4,9 +4,9 @@ const finds = [
     name: 'White Stockings',
     category: 'Accessories',
     photos: [
-      { src: 'accessory-photos/224243.webp', alt: 'White stockings styled with a pink plaid skirt and white boots while seated' },
-      { src: 'accessory-photos/224244.webp', alt: 'Standing outfit view with white stockings, a pink plaid skirt, and bow details' },
-      { src: 'accessory-photos/224245.webp', alt: 'Plain white stockings on a white background' }
+      { src: 'accessory-photos/224243-square.webp', alt: 'White stockings styled with a pink plaid skirt and white boots while seated' },
+      { src: 'accessory-photos/224244-square.webp', alt: 'Standing outfit view with white stockings, a pink plaid skirt, and bow details' },
+      { src: 'accessory-photos/224245-square.webp', alt: 'Plain white stockings on a white background' }
     ]
   },
   {
