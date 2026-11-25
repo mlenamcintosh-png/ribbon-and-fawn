@@ -56,6 +56,18 @@ footer{margin-top:16px;text-align:center;padding:6px;font-size:.9rem}
 @media(max-width:600px){.book{margin:20px 13px;padding:8px}.spread{display:block}.sidebar-card{margin-bottom:12px}.sidebar-card h2,.note,.postcard{display:none}nav{display:flex;flex-wrap:wrap;justify-content:center;padding:0}nav a{padding:5px 7px}#count{float:none}.cards{grid-template-columns:repeat(auto-fit,minmax(min(116px,100%),1fr))}}
 
 .find-gallery img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;background:var(--pink)}
-.photo-switch{width:100%;padding:5px;border:1px solid var(--line);background:var(--pink);font-family:'Fraunces',Georgia,serif;font-size:.875rem;color:var(--berry)}
-.photo-switch:hover{background:#f0c9db}
-.photo-switch span{display:block;font-family:'Source Serif 4',Georgia,serif;font-size:.8rem}
+.photo-controls{display:flex;justify-content:space-between;align-items:center;gap:4px;padding:4px 0;font-size:.8rem}
+.photo-switch{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:var(--pink);color:var(--berry);font:700 1.4rem/1 'Fraunces',Georgia,serif}
+.photo-switch:hover,.bag-add:hover,.fawn-panel button:hover{background:#f0c9db}
+.bag-add,.fawn-panel button,.bag-line button{border:1px solid var(--line);padding:4px 8px;background:var(--pink);font-family:'Fraunces',Georgia,serif}
+.bag-add{margin:6px 34px 0 0}
+.bag-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.bag-line input{width:4rem;font:inherit}
+#bag-total{display:grid;grid-template-columns:1fr auto;gap:6px}
+#bag-total dd{margin:0;text-align:right}
+#suggestion{display:block;width:100%;margin:8px 0;padding:8px;font:inherit;color:inherit;border:1px solid var(--line)}
+.fawn-help{position:fixed;z-index:2;right:12px;bottom:12px;max-width:min(310px,calc(100vw - 24px));background:var(--cream);border:3px double var(--line);padding:0;box-shadow:0 4px 14px #a3637b35}
+.fawn-help summary{padding:8px 12px;background:var(--pink);font-family:'Fraunces',Georgia,serif}
+.fawn-panel{padding:0 12px 6px}
+.fawn-panel button{margin:0 0 4px}
+body{padding-bottom:36px}

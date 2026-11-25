@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css">
-<script src="app.js?v=platform-heels" defer></script>
+<link rel="stylesheet" href="style.css?v=shopping-bag">
+<script src="app.js?v=shopping-bag" defer></script>
 </head>
 <body>
 <div class="lace" aria-hidden="true"></div>
@@ -24,6 +24,8 @@
       <a href="#home">Home</a>
       <a href="#finds">Shopping finds</a>
       <a href="#journal">Journal</a>
+      <a href="#bag">My bag <span id="bag-count">0</span></a>
+      <a href="#suggestions">Suggestions</a>
       <a href="#wishlist">Wishlist <span id="count">0</span></a>
     </nav>
   </div>
@@ -79,9 +81,40 @@
     <p id="empty">Your wishlist is empty. <a href="#finds">Browse the finds</a> to save a favourite.</p>
     <div id="saved" class="cards"></div>
   </section>
+  <section id="bag" class="framed inner" data-page hidden>
+    <h1>My shopping bag</h1>
+    <p id="bag-empty">Your bag is empty. <a href="#finds">Browse the finds</a>.</p>
+    <div id="bag-lines"></div>
+    <div id="bag-checkout" hidden>
+      <dl id="bag-total"></dl>
+      <p>Each line is the price per item multiplied by its quantity. The total includes any applicable shipping or delivery charge.</p>
+      <p><strong>Payment is due in full before your items are shipped, delivered, or handed over. Any applicable shipping must be paid with your order.</strong></p>
+      <button type="button" class="ribbon-button" id="order-email">Prepare order email</button>
+      <p id="order-status" role="status"></p>
+    </div>
+  </section>
+  <section id="suggestions" class="framed inner" data-page hidden>
+    <h1>Suggestions corner</h1>
+    <form id="suggestion-form">
+      <label for="suggestion">What would you like to see on Ribbon &amp; Fawn?</label>
+      <textarea id="suggestion" rows="5" maxlength="700" required></textarea>
+      <button class="ribbon-button" type="submit">Prepare suggestion email</button>
+      <p id="suggestion-status" role="status"></p>
+    </form>
+  </section>
 </main>
 </div>
 <footer>Ribbon &amp; Fawn <span aria-hidden="true">♡</span></footer>
 </div>
+<details class="fawn-help">
+  <summary><span aria-hidden="true">🦌</span> Ask Fawn</summary>
+  <div class="fawn-panel">
+    <p>Hi, I’m Fawn! What can I help you with?</p>
+    <button type="button" data-help="shoes">Find the shoes</button>
+    <button type="button" data-help="save">Save my favourites</button>
+    <button type="button" data-help="pay">How do I order?</button>
+    <p id="fawn-answer" aria-live="polite"></p>
+  </div>
+</details>
 </body>
 </html>
