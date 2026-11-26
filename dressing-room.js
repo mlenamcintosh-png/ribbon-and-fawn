@@ -4,7 +4,7 @@
   const closetForm = byId('closet-form');
   const outfitForm = byId('outfit-form');
   const status = byId('dressing-status');
-  const shop = finds.map(item => ({
+  const shop = finds.filter(item => item.category !== 'Shoes').map(item => ({
     id: 'shop-' + item.id, name: item.name, category: item.category,
     image: item.photos?.[0]?.src, symbol: item.symbol,
     cutout: item.id === 'pink-lace-knit-sweater' ? 'top-photos/pink-knit-cutout.webp' : undefined
@@ -99,7 +99,8 @@
         }
       }, onBoard ? undefined : included);
     if (!onBoard) toggle.dataset.piece = piece.id;
-    element.append(label, category, toggle);
+    element.append(label, category);
+    if (piece.category !== 'Shoes') element.append(toggle);
     if (!onBoard && !piece.id.startsWith('shop-')) {
       const remove = button('Delete', 'Delete ' + piece.name + ' from wardrobe', () => confirmDeletion(piece, remove));
       element.append(remove);
@@ -189,12 +190,12 @@
     mannequin.classList.toggle('wearing-shoes', layers.has('shoes'));
     const clothes = [...layers].map(([slot, piece]) => {
       const fitted = fittedPieces[piece.id];
-      if (fitted) {
+      if (slot === 'stockings' || slot === 'warmers') {
         const pair = document.createElement('div');
-        pair.className = 'fitted-pair fitted-' + fitted;
+        pair.className = 'fitted-pair fitted-' + slot;
         pair.setAttribute('role', 'img');
         pair.setAttribute('aria-label', piece.name);
-        pair.style.setProperty('--garment', 'url("dressing-assets/' + fitted + '.webp")');
+        pair.style.setProperty('--garment', 'url("' + (fitted ? 'dressing-assets/' + fitted + '.webp' : piece.image) + '")');
         pair.append(document.createElement('span'), document.createElement('span'));
         return pair;
       }
@@ -226,7 +227,7 @@
     byId('closet-empty').hidden = state.closet.length > 0;
     byId('closet-pieces').replaceChildren(...state.closet.map(piece => pieceCard(piece)));
     byId('dressing-finds').replaceChildren(...shop.map(piece => pieceCard(piece)));
-    const board = state.board.map(id => pieces.find(piece => piece.id === id)).filter(Boolean);
+    const board = state.board.map(id => pieces.find(piece => piece.id === id)).filter(piece => piece && piece.category !== 'Shoes');
     renderMannequin(board);
     byId('outfit-board').replaceChildren(...board.map(piece => pieceCard(piece, true)));
     byId('outfit-empty').hidden = board.length > 0;

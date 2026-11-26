@@ -204,3 +204,14 @@ body{padding-bottom:36px}
 .quiz-choices button:hover{background:var(--pink)}
 #closet-delete-dialog{max-width:min(430px,calc(100% - 28px));border:3px double var(--line);background:var(--cream);color:var(--ink)}
 #closet-delete-dialog::backdrop{background:#663e5066}
+
+.mannequin-fit{--leg-width:15%;--leg-inset:33%;--leg-silhouette:polygon(0 0,100% 0,80% 99%,27% 100%)}
+.mannequin-fit .form-leg,.mannequin-fit .fitted-stockings span{width:var(--leg-width);top:43%;height:44%;clip-path:var(--leg-silhouette);border-radius:0}
+.mannequin-fit .form-leg.left,.mannequin-fit .fitted-stockings span:first-child{left:var(--leg-inset)}
+.mannequin-fit .form-leg.right,.mannequin-fit .fitted-stockings span:last-child{right:var(--leg-inset)}
+.mannequin-fit .fitted-stockings span{background-size:235% 104%;background-color:#f2ece8;background-blend-mode:multiply;filter:none}
+.mannequin-fit .fitted-stockings span:first-child{background-position:7% center}
+.mannequin-fit .fitted-stockings span:last-child{background-position:93% center}
+.mannequin-fit .fitted-warmers span{width:calc(var(--leg-width) * .79);top:70%;height:16%}
+.mannequin-fit .fitted-warmers span:first-child{left:calc(var(--leg-inset) + var(--leg-width) * .14)}
+.mannequin-fit .fitted-warmers span:last-child{right:calc(var(--leg-inset) + var(--leg-width) * .14)}
