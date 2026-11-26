@@ -63,7 +63,13 @@ const finds = [
 ].map(item => ({ aesthetic: 'Coquette', ...item }));
 const orderSettings = {
   email: 'ribbonandfawn@gmail.com',
-  pricesInCents: {},
+  pricesInCents: {
+    'white-stockings': 2000,
+    'pink-ballet-flats': 10000,
+    'pink-bow-mary-janes': 10500,
+    'pink-bow-platform-heels': 12000,
+    'pink-lace-knit-sweater': 9500
+  },
   shippingInCents: null
 };
 const money = cents => `BBD ${(cents / 100).toFixed(2)}`;
