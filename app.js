@@ -60,7 +60,7 @@ const finds = [
   { id: 'bow', name: 'Satin bow clip', category: 'Accessories', symbol: 'ෆ', color: '#f3ccd9' },
   { id: 'tray', name: 'Heart trinket tray', category: 'Room', symbol: '♡', color: '#f4dfd5' },
   { id: 'pouch', name: 'Gingham pouch', category: 'Accessories', symbol: '❀', color: '#e9d8ef' }
-];
+].map(item => ({ aesthetic: 'Coquette', ...item }));
 const orderSettings = {
   email: '',
   pricesInCents: {},
@@ -103,6 +103,25 @@ try {
   // The wishlist remains usable for the current visit if storage is unavailable.
 }
 let activeFilter = 'All';
+const aestheticFilter = cards('aesthetic-filter');
+function renderCatalog() {
+  const aesthetic = aestheticFilter.value;
+  const matches = finds.filter(item => (activeFilter === 'All' || item.category === activeFilter) &&
+    (!aesthetic || item.aesthetic === aesthetic));
+  renderCards(cards('catalog'), matches);
+  const empty = cards('catalog-empty');
+  empty.hidden = matches.length > 0;
+  empty.textContent = aesthetic && !finds.some(item => item.aesthetic === aesthetic)
+    ? 'No ' + aesthetic + ' pieces yet.' : 'No pieces match both filters.';
+}
+
+function filterByAesthetic(aesthetic) {
+  aestheticFilter.value = aesthetic;
+  activeFilter = 'All';
+  filters.forEach(filter => filter.setAttribute('aria-pressed', String(filter.dataset.filter === 'All')));
+  renderCatalog();
+}
+aestheticFilter.addEventListener('change', renderCatalog);
 
 function renderGallery(item) {
   const photo = item.photos[0];
@@ -133,13 +152,12 @@ function refresh() {
   cards('count').textContent = saved.size;
   cards('empty').hidden = saved.size > 0;
   renderCards(cards('featured'), finds);
-  renderCards(cards('catalog'), finds.filter(item => activeFilter === 'All' || item.category === activeFilter));
+  renderCatalog();
   renderCards(cards('saved'), finds.filter(item => saved.has(item.id)));
-  document.dispatchEvent(new Event('fawn-catalog-update'));
 }
 
 function showPage(moveFocus = false) {
-  const requested = location.hash.slice(1);
+  const requested = location.hash === '#aesthetics' ? 'finds' : location.hash.slice(1);
   const page = pages.find(item => item.id === requested) ?? pages[0];
   pages.forEach(item => { item.hidden = item !== page; });
   navLinks.forEach(link => {
@@ -182,7 +200,7 @@ document.addEventListener('click', event => {
   if (button.dataset.filter) {
     activeFilter = button.dataset.filter;
     filters.forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
-    renderCards(cards('catalog'), finds.filter(item => activeFilter === 'All' || item.category === activeFilter));
+    renderCatalog();
   }
   if (button.dataset.save) {
     const id = button.dataset.save;

@@ -215,3 +215,12 @@ body{padding-bottom:36px}
 .mannequin-fit .fitted-warmers span{width:calc(var(--leg-width) * .79);top:70%;height:16%}
 .mannequin-fit .fitted-warmers span:first-child{left:calc(var(--leg-inset) + var(--leg-width) * .14)}
 .mannequin-fit .fitted-warmers span:last-child{right:calc(var(--leg-inset) + var(--leg-width) * .14)}
+
+.aesthetic-filter{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px;font-family:'Fraunces',Georgia,serif}
+.aesthetic-filter select{max-width:100%;padding:6px 9px;border:1px solid var(--line);background:var(--cream);color:var(--ink);font:inherit}
+.quiz-photo{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;background:#fae8ef;border-radius:5px}
+.quiz-choices{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}
+.quiz-photo-option{display:grid;align-content:start;gap:4px}
+.quiz-photo-option button{height:100%;text-align:left}
+.quiz-credit{font-size:.75rem}
+.quiz-match .quiz-photo{width:min(100%,155px)}

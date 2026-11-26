@@ -1,33 +1,17 @@
 (() => {
-  const styles = [
-    { id: 'coquette', name: 'Coquette', palette: ['#f4c9db','#fff4e3','#a85b7a'], details: 'Blush pink, lace, and ribbon bows.', items: ['pink-lace-knit-sweater','pink-bow-mary-janes'] },
-    { id: 'cottagecore', name: 'Cottagecore', palette: ['#ae9870','#d5dbad','#fbefcd'], details: 'Moss green, warm cream, and soft layers.', items: ['cream-leg-warmers','pouch'] },
-    { id: 'dark-romantic', name: 'Dark Romantic', palette: ['#27232c','#643444','#bda1c5'], details: 'Black, plum, and wine with striking details.', items: ['white-stockings','pink-bow-platform-heels'] },
-    { id: 'coastal', name: 'Coastal Casual', palette: ['#9fc7d7','#24768e','#f2dfbd'], details: 'Ocean blue, sand, and airy basics.', items: ['white-stockings','pouch'] }
-  ];
+  const styles = [["Coquette","top-photos/pink-knit-231941.webp","","Pink lace and ribbon details"],["Cottagecore","https://i.pinimg.com/736x/1e/4f/1d/1e4f1d6603fbc15360773e7f037567e3.jpg","https://www.pinterest.com/pin/green-floral-cottagecore-dress-from-hill-house--150941025001453960/","Green floral dress in a garden"],["Dark Academia","https://cdn.mos.cms.futurecdn.net/8BeqaLcunVS49pHkovrqQ9.jpg","https://www.womanandhome.com/fashion/what-is-dark-academia-style-the-book-smart-trend-taking-over-social-media/","Vintage-inspired blazers in brown and gray"],["Gothic","https://punkdesign.shop/cdn/shop/files/kobine-women-s-gothic-lace-lace-up-ruffled-flared-long-sleeved-shirt-33536011534451_1024x1024.jpg?v=1706854551","https://punkdesign.shop/collections/lace-tops","Black lace with flared sleeves"],["Coastal Casual","https://i.etsystatic.com/61721758/r/il/c5623c/7773228931/il_1140xN.7773228931_hp55.jpg","https://www.etsy.com/listing/4459962113/light-blue-linen-two-piece-set-for-women","Relaxed light-blue linen layers"],["Streetwear","https://ae01.alicdn.com/kf/Sad628b29741a4642a61dcfaf2ddc5651T.jpg","https://ae01.alicdn.com/kf/Sad628b29741a4642a61dcfaf2ddc5651T.jpg","Relaxed streetwear with sneakers"],["Y2K","https://www.lavanguardia.com/uploads/2022/09/01/6310a33bdf1b1.jpeg","https://www.lavanguardia.com/magazine/moda/20220902/8496508/guia-combinar-pantalon-cargo-estrella-otono.html","Statement cargo trousers in a street-style outfit"],["Minimalist","https://img.ramonki.by/b/7/79/798/7985/79858.jpg","https://ramonki.com/blog/sovremennye-stili-odezdy-v-2026-godu-polnyi-gid-po-modnym-napravleniyam-i-trendam","Clean-lined beige monochrome outfit"]];
   const byId = id => document.getElementById(id);
-  const swatches = style => `<span class="style-swatches" aria-hidden="true">${style.palette.map(color => `<i style="background:${color}"></i>`).join('')}</span>`;
-  byId('aesthetic-collections').innerHTML = styles.map(style => `
-    <section class="style-collection" id="style-${style.id}" tabindex="-1" style="--collection-color:${style.palette[1]}">
-      ${swatches(style)}<h2>${style.name}</h2><p>${style.details}</p>
-      <h3>Pieces to style</h3><div class="cards" id="finds-${style.id}"></div>
-    </section>`).join('');
-  function renderCollections() {
-    styles.forEach(style => renderCards(byId('finds-' + style.id), finds.filter(item => style.items.includes(item.id))));
-  }
-  renderCollections();
-  document.addEventListener('fawn-catalog-update', renderCollections);
-
   const questions = [
-    { title: 'Which palette would you reach for first?', choices: ['Blush and ivory','Moss and cream','Wine and black','Ocean blue and sand'] },
-    { title: 'Pick an outfit detail.', choices: ['A satin ribbon bow','A soft knit layer','A dramatic dark lace trim','A clean linen texture'] },
-    { title: 'Pick a setting for your outfit.', choices: ['A vintage vanity','A garden picnic','A candlelit bookshop','A breezy seaside café'] },
-    { title: 'What would you wear on repeat?', choices: ['Bow shoes and a lace-trim top','A floral skirt and cozy cardigan','A dark fitted top and statement shoes','An airy shirt and easy layers'] },
-    { title: 'What mood feels most like you today?', choices: ['Sweet and romantic','Earthy and cozy','Moody and bold','Fresh and relaxed'] }
+    'Which outfit would you pick for a day out?',
+    'Which outfit’s colours would you wear most?',
+    'Which outfit has details you’d save for inspiration?',
+    'Which look would you most enjoy styling with your own closet?',
+    'Which outfit feels most like you?'
   ];
   const quiz = byId('quiz-content');
   let answers = [];
-  function focusQuiz() { quiz.querySelector('h2').focus(); }
+  const photo = ([name, url, source, description]) => `<img class="quiz-photo" src="${url}" alt="${description}" loading="lazy" referrerpolicy="no-referrer">`;
+  const credit = ([name, url, source]) => source ? `<a class="quiz-credit" href="${source}" target="_blank" rel="noopener noreferrer">Photo source<span class="quiz-source-name"> · ${name}</span></a>` : '';
   function showQuiz(focus = false) {
     const step = answers.length;
     if (step === questions.length) {
@@ -35,22 +19,24 @@
         style, score: answers.filter(answer => answer === index).length, lastChoice: answers.lastIndexOf(index)
       })).sort((a, b) => b.score - a.score || b.lastChoice - a.lastChoice);
       quiz.innerHTML = '<h2 tabindex="-1">Your style matches</h2>' + ranked.slice(0, 2).map(({style, score}, index) => `
-        <div class="quiz-match">${swatches(style)}<h3>${index ? 'Runner-up' : 'Main aesthetic'} · ${style.name}</h3>
-        <p>${score ? style.details : 'Try this palette for a different mood.'}</p><a href="#aesthetics" data-style-link="${style.id}">See ${style.name} finds</a></div>`).join('') +
+        <div class="quiz-match"><h3>${index ? (score ? 'Runner-up' : 'Try next') : 'Main aesthetic'} · ${style[0]}</h3>${photo(style)}
+        <p>${credit(style)}</p><a href="#finds" data-style-link="${style[0]}">Shop ${style[0]}</a></div>`).join('') +
         '<button type="button" class="ribbon-button" data-restart>Retake quiz</button>';
     } else {
-      const question = questions[step];
-      quiz.innerHTML = `<p>Question ${step + 1} of ${questions.length}</p><h2 tabindex="-1">${question.title}</h2>
-        <div class="quiz-choices">${question.choices.map((choice, index) =>
-          `<button type="button" data-answer="${index}">${swatches(styles[index])}<span>${choice}</span></button>`).join('')}</div>
+      const choices = styles.map((_, index) => (index + step * 3) % styles.length);
+      quiz.innerHTML = `<p>Question ${step + 1} of ${questions.length}</p><h2 tabindex="-1">${questions[step]}</h2>
+        <div class="quiz-choices">${choices.map(index => {
+          const style = styles[index];
+          return `<div class="quiz-photo-option"><button type="button" data-answer="${index}">${photo(style)}<span>${style[3]}</span></button>${credit(style)}</div>`;
+        }).join('')}</div>
         ${step ? '<button class="ribbon-button" type="button" data-back>Back</button>' : ''}`;
     }
-    if (focus) focusQuiz();
+    if (focus) quiz.querySelector('h2').focus();
   }
   quiz.addEventListener('click', event => {
     const link = event.target.closest('[data-style-link]');
     if (link) {
-      window.addEventListener('hashchange', () => byId('style-' + link.dataset.styleLink).focus(), { once: true });
+      filterByAesthetic(link.dataset.styleLink);
       return;
     }
     const target = event.target.closest('button');

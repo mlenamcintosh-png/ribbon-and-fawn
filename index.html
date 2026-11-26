@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=leg-fit">
-<script src="app.js?v=style-studio" defer></script>
+<link rel="stylesheet" href="style.css?v=photo-quiz">
+<script src="app.js?v=photo-quiz" defer></script>
 <script src="dressing-room.js?v=9" defer></script>
-<script src="style-studio.js" defer></script>
+<script src="style-studio.js?v=photo-quiz" defer></script>
 </head>
 <body>
 <div class="lace" aria-hidden="true"></div>
@@ -26,7 +26,7 @@
       <a href="#home">Home</a>
       <a href="#finds">Shopping finds</a>
       <a href="#dressing-room">Dressing Room</a>
-      <a href="#journal">Journal</a><a href="#aesthetics">Aesthetics</a><a href="#style-quiz">Style quiz</a>
+      <a href="#journal">Journal</a><a href="#style-quiz">Style quiz</a>
       <a href="#bag">My bag <span id="bag-count">0</span></a>
       <a href="#suggestions">Suggestions</a>
       <a href="#wishlist">Wishlist <span id="count">0</span></a>
@@ -69,6 +69,10 @@
       <button type="button" data-filter="Shoes" aria-pressed="false">Shoes</button>
       <button type="button" data-filter="Room" aria-pressed="false">Room</button>
     </div>
+    <label class="aesthetic-filter" for="aesthetic-filter">Aesthetic
+      <select id="aesthetic-filter"><option value="">All aesthetics</option><option>Coquette</option><option>Cottagecore</option><option>Dark Academia</option><option>Gothic</option><option>Coastal Casual</option><option>Streetwear</option><option>Y2K</option><option>Minimalist</option></select>
+    </label>
+    <p id="catalog-empty" role="status" hidden></p>
     <div id="catalog" class="cards"></div>
   </section>
   <section id="journal" class="framed inner" data-page hidden>
@@ -179,7 +183,6 @@
     <p class="dressing-note">Closet photos and saved outfits stay in this browser.</p>
     <p id="dressing-status" role="status"></p>
   </section>
-<section id="aesthetics" class="framed inner" data-page hidden><h1>Explore aesthetics</h1><p>Find a new mood or take the <a href="#style-quiz">style quiz</a>.</p><div id="aesthetic-collections"></div></section>
 <section id="style-quiz" class="framed inner" data-page hidden><h1>What’s your style?</h1><div id="quiz-content"></div></section></main>
 </div>
 <section id="site-music" class="framed inner site-music" hidden aria-label="YouTube music player"><h2>Ribbon &amp; Fawn soundtrack</h2><div id="music-player"></div><a href="https://youtu.be/jcPmCOUrwNA" target="_blank" rel="noopener noreferrer">Open the track on YouTube</a></section><footer>Ribbon &amp; Fawn <span aria-hidden="true">♡</span></footer>
