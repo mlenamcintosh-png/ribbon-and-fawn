@@ -6,7 +6,8 @@
   const status = byId('dressing-status');
   const shop = finds.map(item => ({
     id: 'shop-' + item.id, name: item.name, category: item.category,
-    image: item.photos?.[0]?.src, symbol: item.symbol
+    image: item.photos?.[0]?.src, symbol: item.symbol,
+    cutout: item.id === 'pink-lace-knit-sweater' ? 'top-photos/pink-knit-cutout.webp' : undefined
   }));
   let state = { closet: [], board: [], outfits: [] };
   try {
@@ -73,12 +74,31 @@
     return element;
   }
 
+  function renderMannequin(board) {
+    const slots = { Tops: 'top', Bottoms: 'bottom', Dresses: 'dress', Shoes: 'shoes', Accessories: 'accessory' };
+    const layers = new Map();
+    board.forEach(piece => {
+      const slot = slots[piece.category];
+      if (slot && (piece.cutout || piece.image)) layers.set(slot, piece);
+    });
+    const clothes = [...layers].map(([slot, piece]) => {
+      const image = document.createElement('img');
+      image.className = 'dress-layer dress-layer-' + slot;
+      if (!piece.cutout && piece.id.startsWith('shop-')) image.classList.add('dress-layer-photo');
+      image.src = piece.cutout ?? piece.image;
+      image.alt = piece.name;
+      return image;
+    });
+    byId('dress-form-layers').replaceChildren(...clothes);
+  }
+
   function render() {
     const pieces = [...state.closet, ...shop];
     byId('closet-empty').hidden = state.closet.length > 0;
     byId('closet-pieces').replaceChildren(...state.closet.map(piece => pieceCard(piece)));
     byId('dressing-finds').replaceChildren(...shop.map(piece => pieceCard(piece)));
     const board = state.board.map(id => pieces.find(piece => piece.id === id)).filter(Boolean);
+    renderMannequin(board);
     byId('outfit-board').replaceChildren(...board.map(piece => pieceCard(piece, true)));
     byId('outfit-empty').hidden = board.length > 0;
     outfitForm.querySelector('button').disabled = !board.length;
