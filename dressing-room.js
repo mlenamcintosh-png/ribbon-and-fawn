@@ -74,6 +74,54 @@
     return element;
   }
 
+  const fitKey = 'ribbon-fawn-mannequin-fit';
+  const sizes = ['Very slim', 'Slim', 'Small', 'Medium', 'Full', 'Large', 'Extra large'];
+  const tones = ["#f9e9e2","#f3d9ca","#edc7b1","#dfad92","#ca9475","#b77e60","#9e654a","#845139","#6e402e","#573126","#40241d","#2b1714"];
+  const shapes = {
+    balanced: [1, 1, 1], straight: [0.94, 1.18, 0.91], curved: [1.05, 0.83, 1.12],
+    hips: [0.9, 0.94, 1.2], shoulders: [1.16, 1.02, 0.9], rounded: [1, 1.33, 1.05]
+  };
+  const sizeControl = byId('mannequin-size');
+  const shapeControl = byId('mannequin-shape');
+  const toneControl = byId('mannequin-tone');
+  try {
+    const fit = JSON.parse(localStorage.getItem(fitKey));
+    if (Number.isFinite(fit?.size)) sizeControl.value = fit.size;
+    if (Object.hasOwn(shapes, fit?.shape)) shapeControl.value = fit.shape;
+    if (tones[fit?.tone]) toneControl.value = fit.tone;
+  } catch {
+    // Use the controls' defaults when no saved preferences are available.
+  }
+
+  function applyFit() {
+    const size = Number(sizeControl.value);
+    const shape = shapeControl.value;
+    const tone = Number(toneControl.value);
+    const [shoulders, waist, hips] = shapes[shape];
+    const style = byId('mannequin-fit').style;
+    style.setProperty('--body-size', 0.76 + size * 0.0048);
+    style.setProperty('--shoulders', shoulders);
+    style.setProperty('--hips', hips);
+    style.setProperty('--waist-inset', (50 - 25 * waist) + '%');
+    style.setProperty('--skin', tones[tone]);
+    byId('mannequin-tone-preview').style.backgroundColor = tones[tone];
+    const sizeName = sizes[Math.round(size / 100 * (sizes.length - 1))];
+    byId('mannequin-size-value').textContent = sizeName;
+    sizeControl.setAttribute('aria-valuetext', sizeName);
+  }
+
+  byId('mannequin-options').addEventListener('input', () => {
+    applyFit();
+    try {
+      localStorage.setItem(fitKey, JSON.stringify({
+        size: Number(sizeControl.value), shape: shapeControl.value, tone: Number(toneControl.value)
+      }));
+    } catch {
+      // The preview remains adjustable when storage is unavailable.
+    }
+  });
+  applyFit();
+
   function renderMannequin(board) {
     const slots = { Tops: 'top', Bottoms: 'bottom', Dresses: 'dress', Shoes: 'shoes', Accessories: 'accessory' };
     const fittedPieces = {

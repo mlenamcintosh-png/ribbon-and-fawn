@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=textured-outfits">
+<link rel="stylesheet" href="style.css?v=mannequin-fit">
 <script src="app.js?v=wardrobe" defer></script>
-<script src="dressing-room.js?v=5" defer></script>
+<script src="dressing-room.js?v=6" defer></script>
 </head>
 <body>
 <div class="lace" aria-hidden="true"></div>
@@ -138,7 +138,25 @@
       </div>
       <div class="outfit-panel">
         <h2>My outfit board</h2>
+        <fieldset class="mannequin-options" id="mannequin-options">
+          <legend>Customize mannequin</legend>
+          <label for="mannequin-size">Size</label>
+          <input id="mannequin-size" type="range" min="0" max="100" value="50" aria-describedby="mannequin-size-value">
+          <output id="mannequin-size-value" for="mannequin-size">Medium</output>
+          <label>Body shape
+            <select id="mannequin-shape">
+              <option value="balanced">Balanced</option><option value="straight">Straight</option>
+              <option value="curved">Defined waist</option><option value="hips">Wider hips</option>
+              <option value="shoulders">Broader shoulders</option><option value="rounded">Fuller midsection</option>
+            </select>
+          </label>
+          <label>Skin tone
+            <select id="mannequin-tone"><option value="0">1 · Lightest</option><option value="1">2</option><option value="2">3</option><option value="3">4</option><option value="4">5</option><option value="5">6</option><option value="6">7</option><option value="7">8</option><option value="8">9</option><option value="9">10</option><option value="10">11</option><option value="11">12 · Deepest</option></select>
+          </label>
+          <span class="tone-preview" id="mannequin-tone-preview" aria-hidden="true"></span>
+        </fieldset>
         <div class="dress-form-stage">
+          <div class="mannequin-fit" id="mannequin-fit">
           <div class="dress-form-stand" aria-hidden="true"></div>
           <div class="dress-form-neck" aria-hidden="true"><span>୨୧</span></div>
           <div class="dress-form-limbs" aria-hidden="true">
@@ -148,8 +166,9 @@
           </div>
           <div class="dress-form-body" aria-hidden="true"></div>
           <div id="dress-form-layers" role="group" aria-label="Mannequin outfit preview"></div>
+          </div>
         </div>
-        <p class="dressing-note">Choose <strong>Style it</strong> to dress the mannequin. Transparent PNG or WebP cutouts work best for your own clothes.</p>
+        <p class="dressing-note">Choose <strong>Style it</strong> to dress the mannequin. Trim blank space around your transparent PNG or WebP before adding it for a closer fit.</p>
         <p id="outfit-empty">Choose a piece to start your outfit.</p>
         <div id="outfit-board" class="dressing-pieces"></div>
         <form id="outfit-form">

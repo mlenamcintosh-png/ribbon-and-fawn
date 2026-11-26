@@ -158,3 +158,22 @@ body{padding-bottom:36px}
 .fitted-stockings span{border-radius:0}
 .fitted-flats span,.fitted-mary-janes span,.fitted-heels span{top:81%;height:9%;border-radius:0}
 .fitted-heels span{top:80%;height:10%}
+
+.mannequin-options{display:grid;gap:5px;margin:0 0 12px;padding:9px;border:1px solid var(--line);background:#fff8fb}
+.mannequin-options legend{font:700 1rem 'Fraunces',Georgia,serif;color:var(--berry)}
+#dressing-room .mannequin-options input[type=range]{accent-color:#a45479;padding:0;background:none;border:0}
+.tone-preview{width:1.4rem;height:1.4rem;border:1px solid #a97691;border-radius:50%}
+.mannequin-fit{position:absolute;inset:0;transform:scaleX(var(--body-size,1))}
+.mannequin-fit .dress-form-body,.mannequin-fit .dress-form-neck,.mannequin-fit .form-arm,.mannequin-fit .form-leg,.mannequin-fit .form-foot{background:linear-gradient(90deg,color-mix(in srgb,var(--skin) 78%,black),var(--skin) 50%,color-mix(in srgb,var(--skin) 86%,black))}
+.mannequin-fit .dress-form-body{clip-path:polygon(50% 0,76% 3%,88% 10%,87% 28%,calc(100% - var(--waist-inset)) 47%,calc(100% - var(--waist-inset)) 58%,88% 77%,92% 95%,77% 100%,23% 100%,8% 95%,12% 77%,var(--waist-inset) 58%,var(--waist-inset) 47%,13% 28%,12% 10%,24% 3%);transform:scaleX(var(--shoulders))}
+.mannequin-fit .form-leg,.mannequin-fit .form-foot,.mannequin-fit .fitted-pair span{scale:var(--hips) 1}
+.mannequin-fit .dress-layer{object-fit:fill}
+.mannequin-fit .dress-layer-top{top:14%;left:20%;width:60%;height:34%;transform:scaleX(var(--shoulders))}
+.mannequin-fit .dress-layer-bottom{left:27%;width:46%;transform:scaleX(var(--hips))}
+.mannequin-fit .dress-layer-dress{left:23%;width:54%;transform:scaleX(var(--hips))}
+.mannequin-fit .dress-layer-stockings,.mannequin-fit .dress-layer-warmers,.mannequin-fit .dress-layer-shoes{transform:scaleX(var(--hips))}
+.mannequin-fit .dress-layer-photo{object-fit:contain}
+.mannequin-fit .fitted-warmers span{width:14%;top:71%;height:14%}
+.mannequin-fit .fitted-warmers span:first-child{left:33%}
+.mannequin-fit .fitted-warmers span:last-child{right:33%}
+.mannequin-fit .fitted-flats span,.mannequin-fit .fitted-mary-janes span,.mannequin-fit .fitted-heels span{width:15%}
