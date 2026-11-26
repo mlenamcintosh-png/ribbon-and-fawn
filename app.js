@@ -71,7 +71,7 @@ const orderSettings = {
     'white-stockings': 1200,
     'cream-leg-warmers': 1500
   },
-  shippingInCents: null
+  shippingInCents: 1200
 };
 const money = cents => `BBD ${(cents / 100).toFixed(2)}`;
 const bagKey = 'ribbon-fawn-shopping-bag';
@@ -317,7 +317,7 @@ const fulfillmentKey = 'ribbon-fawn-fulfillment';
 const referenceKey = 'ribbon-fawn-order-reference';
 const receipt = cards('order-receipt');
 const previousFulfillment = readLocal(fulfillmentKey);
-if (['Pickup','Meetup','Delivery'].includes(previousFulfillment)) fulfillment.value = previousFulfillment;
+if ([...fulfillment.options].some(option => option.value === previousFulfillment)) fulfillment.value = previousFulfillment;
 
 function bagSummary() {
   const lines = [...bag].map(([key, quantity]) => {
@@ -326,8 +326,8 @@ function bagSummary() {
   });
   const subtotal = lines.every(line => Number.isInteger(line.price))
     ? lines.reduce((sum, line) => sum + line.price * line.quantity, 0) : null;
-  const shipping = fulfillment.value === 'Delivery' ? orderSettings.shippingInCents : null;
-  const total = subtotal !== null && shipping !== null ? subtotal + shipping : null;
+  const shipping = fulfillment.value === 'Delivery' ? orderSettings.shippingInCents : 0;
+  const total = subtotal === null ? null : subtotal + shipping;
   return { lines, subtotal, shipping, total, method: fulfillment.value };
 }
 
@@ -335,7 +335,7 @@ function totals(summary) {
   return [
     ['Items subtotal', summary.subtotal === null ? 'Pending prices' : money(summary.subtotal)],
     ['Receiving method', summary.method],
-    ['Delivery or meetup fee, if applicable', summary.shipping === null ? 'Pending confirmation' : money(summary.shipping)],
+    ['Receiving fee', summary.shipping === 0 ? 'Free' : money(summary.shipping)],
     ['Total due', summary.total === null ? 'Pending confirmation' : money(summary.total)]
   ];
 }
@@ -364,7 +364,7 @@ function renderBag() {
   cards('receipt-open').disabled = missing || !lines.length;
   cards('order-email').textContent = summary.total === null ? 'Email for an order quote' : 'Prepare order email';
   cards('order-status').textContent = missing ? 'Choose a size for each sized item.' :
-    summary.total === null ? 'Prices and any applicable delivery fee will be confirmed by email.' :
+    summary.total === null ? 'Any unlisted item prices will be confirmed by email.' :
     'Review and send your order from your email app.';
 }
 
@@ -497,7 +497,7 @@ function answerFawn(question) {
   if (items.length) return (asksSize ? 'Open the item to see its size choices.' :
     asksPrice ? 'Here’s what I found.' : 'Take a look at these pieces.') + productLinks(items);
   if (/\b(shipping|delivery|deliver|pickup|pick up|meetup|meet up)\b/.test(words)) {
-    return 'Choose pickup, meetup, or delivery in <a href="#bag">My Bag</a>. Any applicable fee is confirmed with your order.';
+    return 'Pickup and meetups at BCC, Sky Mall, or Warrens are free. Delivery is BBD $12 extra per order. Choose your option in <a href="#bag">My Bag</a>.';
   }
   if (/\b(pay|payment|order|checkout|buy|receipt|reference|bag|cart)\b/.test(words)) {
     return 'Add items from their product pages, then open <a href="#bag">My Bag</a> for your RF reference and email request. Full payment is due before you receive your items.';

@@ -6,7 +6,7 @@
 <meta name="description" content="A pink scrapbook for shopping finds and outfit inspiration.">
 <title>Ribbon &amp; Fawn</title>
 <link rel="stylesheet" href="style.css?v=ask-fawn">
-<script src="app.js?v=confirmed-bbd" defer></script>
+<script src="app.js?v=receiving-options" defer></script>
 <script src="dressing-room.js?v=10" defer></script>
 <script src="style-studio.js?v=your-collages" defer></script>
 </head>
@@ -90,7 +90,13 @@
     <div id="bag-lines"></div>
     <div id="bag-checkout" hidden>
       <label class="fulfillment-label">How would you like to receive your order?
-        <select id="fulfillment"><option>Pickup</option><option>Meetup</option><option>Delivery</option></select>
+        <select id="fulfillment">
+          <option value="Pickup">Pickup (free)</option>
+          <option value="Meetup at BCC">Meetup at BCC (free)</option>
+          <option value="Meetup at Sky Mall">Meetup at Sky Mall (free)</option>
+          <option value="Meetup at Warrens">Meetup at Warrens (free)</option>
+          <option value="Delivery">Delivery (+ BBD $12.00)</option>
+        </select>
       </label>
       <dl id="bag-total"></dl>
       <p>Each line is the price per item multiplied by its quantity. The total includes any applicable shipping or delivery charge.</p>
