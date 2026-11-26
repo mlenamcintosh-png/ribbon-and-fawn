@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=dress-form">
+<link rel="stylesheet" href="style.css?v=full-mannequin">
 <script src="app.js?v=wardrobe" defer></script>
-<script src="dressing-room.js?v=3" defer></script>
+<script src="dressing-room.js?v=4" defer></script>
 </head>
 <body>
 <div class="lace" aria-hidden="true"></div>
@@ -125,7 +125,7 @@
           <label>Piece name <input name="name" maxlength="60" required placeholder="Cream cardigan"></label>
           <label>Category <select name="category">
             <option>Tops</option><option>Bottoms</option><option>Dresses</option>
-            <option>Shoes</option><option>Accessories</option>
+            <option>Shoes</option><option>Stockings</option><option>Leg warmers</option><option>Accessories</option>
           </select></label>
           <label>Photo <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required></label>
           <button class="ribbon-button">Add to my closet</button>
@@ -141,6 +141,11 @@
         <div class="dress-form-stage">
           <div class="dress-form-stand" aria-hidden="true"></div>
           <div class="dress-form-neck" aria-hidden="true"><span>୨୧</span></div>
+          <div class="dress-form-limbs" aria-hidden="true">
+            <span class="form-arm left"></span><span class="form-arm right"></span>
+            <span class="form-leg left"></span><span class="form-leg right"></span>
+            <span class="form-foot left"></span><span class="form-foot right"></span>
+          </div>
           <div class="dress-form-body" aria-hidden="true"></div>
           <div id="dress-form-layers" role="group" aria-label="Mannequin outfit preview"></div>
         </div>

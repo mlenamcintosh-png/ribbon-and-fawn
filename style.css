@@ -122,3 +122,38 @@ body{padding-bottom:36px}
 .dress-layer-shoes{bottom:4%;left:34%;width:32%;height:21%}
 .dress-layer-accessory{top:30%;right:3%;width:23%;height:20%;z-index:6}
 .dress-layer-photo{border:1px solid var(--line);border-radius:8px;background:#fffaf9;object-fit:cover}
+
+.dress-form-stage{aspect-ratio:3/5}
+.dress-form-stand{inset:43% 48% 8%;opacity:.6}
+.dress-form-neck{top:7%;height:10%}
+.dress-form-body{top:14%;left:28%;width:44%;height:35%;z-index:1}
+.form-arm,.form-leg,.form-foot,.fitted-pair span{position:absolute}
+.form-arm,.form-leg,.form-foot{background:linear-gradient(90deg,#d7ad9f,#fff1dd 46%,#ddbaa8)}
+.form-arm{top:16%;width:10%;height:34%;border-radius:45%;transform-origin:top}
+.form-arm.left{left:30%;transform:rotate(15deg)}
+.form-arm.right{right:30%;transform:rotate(-15deg)}
+.form-leg,.fitted-stockings span{top:43%;height:44%;width:15%;border-radius:34% 34% 40% 40%;clip-path:polygon(0 0,100% 0,80% 99%,27% 100%)}
+.form-leg.left,.fitted-stockings span:first-child{left:33%}
+.form-leg.right,.fitted-stockings span:last-child{right:33%}
+.form-foot,.fitted-flats span,.fitted-mary-janes span,.fitted-heels span{top:83%;width:16%;height:7%;border-radius:42% 40% 25% 25%}
+.form-foot.left,.fitted-pair:not(.fitted-stockings):not(.fitted-warmers) span:first-child{left:31%}
+.form-foot.right,.fitted-pair:not(.fitted-stockings):not(.fitted-warmers) span:last-child{right:31%}
+.fitted-pair{position:absolute;inset:0;pointer-events:none}
+.fitted-stockings{z-index:2}
+.fitted-stockings span{background:linear-gradient(90deg,#dfd9d8,#fffdfc 52%,#ede6e5);outline:1px solid #bfa7a9}
+.fitted-warmers{z-index:3}
+.fitted-warmers span{top:70%;width:16%;height:15%;border-radius:24% 24% 18% 18%;border:1px solid #d6bf9e;background:repeating-linear-gradient(0deg,#d6bf9e55 0 2px,transparent 2px 7px),repeating-linear-gradient(90deg,#f9ecd5 0 3px,#ead8b9 3px 5px)}
+.fitted-warmers span:first-child{left:32%}
+.fitted-warmers span:last-child{right:32%}
+.fitted-flats,.fitted-mary-janes,.fitted-heels{z-index:4}
+.fitted-flats span,.fitted-mary-janes span,.fitted-heels span{border:1px solid #b76c8e;border-bottom:2px solid #955876;background:#efaecb;text-align:center;color:#8d4666;font-size:clamp(.5rem,2vw,1rem)}
+.fitted-mary-janes span{background:linear-gradient(#cc7f9f 0 20%,#f6c6d9 20%);border-bottom-width:4px}
+.fitted-heels span{background:#e691bb;border-bottom:6px double #955876}
+.fitted-flats span::after,.fitted-heels span::after{content:'୨୧'}
+.fitted-mary-janes span::after{content:'♡'}
+.dress-layer-top{top:14%;left:11%;width:78%;height:39%}
+.dress-layer-bottom{top:41%;height:35%;z-index:4}
+.dress-layer-dress{top:15%;height:60%}
+.dress-layer-shoes{bottom:9%;height:12%;z-index:4}
+.dress-layer-stockings{top:43%;left:31%;width:38%;height:45%;z-index:2}
+.dress-layer-warmers{top:69%;left:31%;width:38%;height:17%;z-index:3}

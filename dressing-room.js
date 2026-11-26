@@ -76,12 +76,30 @@
 
   function renderMannequin(board) {
     const slots = { Tops: 'top', Bottoms: 'bottom', Dresses: 'dress', Shoes: 'shoes', Accessories: 'accessory' };
+    const fittedPieces = {
+      'shop-white-stockings': 'stockings',
+      'shop-cream-leg-warmers': 'warmers',
+      'shop-pink-ballet-flats': 'flats',
+      'shop-pink-bow-mary-janes': 'mary-janes',
+      'shop-pink-bow-platform-heels': 'heels'
+    };
     const layers = new Map();
     board.forEach(piece => {
-      const slot = slots[piece.category];
+      const fitted = fittedPieces[piece.id];
+      const slot = fitted === 'stockings' || piece.category === 'Stockings' ? 'stockings' :
+        fitted === 'warmers' || piece.category === 'Leg warmers' ? 'warmers' : slots[piece.category];
       if (slot && (piece.cutout || piece.image)) layers.set(slot, piece);
     });
     const clothes = [...layers].map(([slot, piece]) => {
+      const fitted = fittedPieces[piece.id];
+      if (fitted) {
+        const pair = document.createElement('div');
+        pair.className = 'fitted-pair fitted-' + fitted;
+        pair.setAttribute('role', 'img');
+        pair.setAttribute('aria-label', piece.name);
+        pair.append(document.createElement('span'), document.createElement('span'));
+        return pair;
+      }
       const image = document.createElement('img');
       image.className = 'dress-layer dress-layer-' + slot;
       if (!piece.cutout && piece.id.startsWith('shop-')) image.classList.add('dress-layer-photo');
