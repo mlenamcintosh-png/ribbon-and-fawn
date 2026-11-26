@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
+<meta name="description" content="A pink scrapbook for shopping finds and outfit inspiration.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=order-summary">
-<script src="app.js?v=order-summary" defer></script>
+<link rel="stylesheet" href="style.css?v=product-details">
+<script src="app.js?v=product-details" defer></script>
 <script src="dressing-room.js?v=9" defer></script>
 <script src="style-studio.js?v=photo-quiz" defer></script>
 </head>
@@ -16,7 +16,7 @@
 <header class="masthead">
   <span class="ornament" aria-hidden="true">✧ ♡ ✧</span>
   <p class="brand">Ribbon <i>&amp;</i> Fawn</p>
-  <p class="tagline">Shopping finds &amp; journal notes</p>
+  <p class="tagline">Shopping finds &amp; outfit inspiration</p>
 <div class="music-controls"><button class="ribbon-button" id="music-play" type="button">♫ Play music</button> <button class="ribbon-button" id="music-mute" type="button" disabled>Mute</button><p id="music-status" role="status"></p></div></header>
 <div class="spread">
 <aside aria-label="Scrapbook sidebar">
@@ -26,7 +26,7 @@
       <a href="#home">Home</a>
       <a href="#finds">Shopping finds</a>
       <a href="#dressing-room">Dressing Room</a>
-      <a href="#journal">Journal</a><a href="#contact">Contact</a><a href="#style-quiz">Style quiz</a>
+      <a href="#contact">Contact</a><a href="#style-quiz">Style quiz</a>
       <a href="#bag">My bag <span id="bag-count">0</span></a>
       <a href="#suggestions">Suggestions</a>
       <a href="#wishlist">Wishlist <span id="count">0</span></a>
@@ -54,10 +54,6 @@
       <h2 id="shelf-title">From the shopping list</h2>
       <div id="featured" class="cards"></div>
     </section>
-    <div class="framed journal-teaser">
-      <span aria-hidden="true">♡</span>
-      <div><h2>Little ways to dress up a vanity</h2><a href="#journal">Read the journal</a></div>
-    </div>
   </section>
   <section id="finds" class="framed inner" data-page hidden>
     <h1>Shopping finds</h1>
@@ -75,14 +71,13 @@
     <p id="catalog-empty" role="status" hidden></p>
     <div id="catalog" class="cards"></div>
   </section>
-  <section id="journal" class="framed inner" data-page hidden>
-    <h1>Journal</h1>
-    <article>
-      <h2>Little ways to dress up a vanity</h2>
-      <p>Start with one corner. Set out a small tray for the jewellery you wear most, tuck your daily makeup into a pouch, and leave a little clear room for getting ready.</p>
-      <p>A pink ribbon around a brush cup or a tiny dish for your rings can make the whole spot feel more like you.</p>
-    </article>
-    <details><summary>Three things I look for in a cute accessory</summary><p>Can I wear it with clothes I already own? Will it be comfortable all day? Would I still like it if it came in a different colour?</p></details>
+  <section id="product" class="framed inner" data-page hidden>
+    <a href="#finds">Back to Shopping Finds</a>
+    <div id="product-info"></div>
+    <section aria-labelledby="related-title">
+      <h2 id="related-title">You might also like</h2>
+      <div id="related-finds" class="cards"></div>
+    </section>
   </section>
   <section id="wishlist" class="framed inner" data-page hidden>
     <h1>Wishlist</h1>

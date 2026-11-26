@@ -138,7 +138,7 @@ aestheticFilter.addEventListener('change', renderCatalog);
 function renderGallery(item) {
   const photo = item.photos[0];
   return `<div class="find-gallery">
-    <img src="${photo.src}" alt="${photo.alt}" width="650" height="650" loading="lazy">
+    <a class="product-photo-link" href="#item/${item.id}" aria-label="View ${item.name}"><img src="${photo.src}" alt="${photo.alt}" width="650" height="650" loading="lazy"></a>
     <div class="photo-controls" data-gallery="${item.id}" data-photo="0">
       <button type="button" class="photo-switch" data-step="-1" aria-label="Previous photo of ${item.name}">‹</button>
       <span aria-live="polite">1 of ${item.photos.length}</span>
@@ -157,7 +157,7 @@ function renderCards(container, items) {
     const isSaved = saved.has(item.id);
     return `<article class="card" data-find="${item.id}">
       ${item.photos ? renderGallery(item) : `<div class="swatch" style="--swatch:${item.color}" aria-hidden="true">${item.symbol}</div>`}
-      <h3>${item.name}</h3>
+      <h3><a href="#item/${item.id}">${item.name}</a></h3>
       <p>${item.category}</p>
       ${sizesByItem[item.id] ? `<label class="card-size">Size<select data-card-size aria-label="Size for ${item.name}">${sizeOptions(item.id)}</select></label>` : ''}
       ${item.photos ? `<button class="bag-add" type="button" data-bag-add="${item.id}">Add to bag</button>` : ''}
@@ -174,26 +174,73 @@ function refresh() {
   renderCards(cards('saved'), finds.filter(item => saved.has(item.id)));
 }
 
+function renderProduct(item) {
+  const photo = item.photos?.[0];
+  const price = orderSettings.pricesInCents[item.id];
+  const sizes = sizesByItem[item.id];
+  const inWishlist = saved.has(item.id);
+  const gallery = photo ? `
+    <div class="detail-gallery">
+      <img id="detail-photo" src="${photo.src}" alt="${photo.alt}" width="650" height="650">
+      <div class="detail-thumbnails" aria-label="Product photos">
+        ${item.photos.map((image, index) => `<button type="button" data-detail-photo="${index}" aria-pressed="${index === 0}" aria-label="View photo ${index + 1}"><img src="${image.src}" alt="" width="60" height="60"></button>`).join('')}
+      </div>
+    </div>` : `<div class="swatch" style="--swatch:${item.color}" aria-hidden="true">${item.symbol}</div>`;
+  cards('product-info').innerHTML = `<article class="product-detail" data-find="${item.id}">
+    ${gallery}
+    <div class="detail-copy">
+      <p>${item.category} · ${item.aesthetic}</p>
+      <h1>${item.name}</h1>
+      <p>${Number.isInteger(price) ? money(price) : 'Price on request'}</p>
+      ${sizes ? `<fieldset class="detail-sizes"><legend>Choose a size</legend>${sizes.map(size =>
+        `<label><input type="radio" name="detail-size" value="${size}"><span>${size}</span></label>`).join('')}</fieldset>` :
+        item.id === 'cream-leg-warmers' ? '<p>One size</p>' : ''}
+      <div class="detail-actions">
+        ${item.photos ? `<button class="ribbon-button" type="button" data-bag-add="${item.id}">Add to bag</button>` : ''}
+        <button type="button" class="ribbon-button detail-heart" data-save="${item.id}" aria-pressed="${inWishlist}">${inWishlist ? '♥ Saved to wishlist' : '♡ Save to wishlist'}</button>
+      </div>
+      <p id="detail-status" role="status"></p>
+    </div>
+  </article>`;
+  const matches = finds.filter(other => other.id !== item.id && other.photos && other.aesthetic === item.aesthetic);
+  const pairings = matches.filter(other => other.category !== item.category);
+  const similar = matches.filter(other => other.category === item.category);
+  renderCards(cards('related-finds'), [...pairings, ...similar].slice(0, 3));
+}
+
 function showPage(moveFocus = false) {
   const requested = location.hash === '#aesthetics' ? 'finds' : location.hash.slice(1);
-  const page = pages.find(item => item.id === requested) ?? pages[0];
+  const product = requested.startsWith('item/') ? finds.find(item => item.id === requested.slice(5)) : null;
+  const page = product ? cards('product') : pages.find(item => item.id === requested) ?? pages[0];
+  if (product) renderProduct(product);
   pages.forEach(item => { item.hidden = item !== page; });
   navLinks.forEach(link => {
-    if (link.hash === '#' + page.id) link.setAttribute('aria-current', 'page');
+    if (link.hash === '#' + (product ? 'finds' : page.id)) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   });
-  if (moveFocus) cards('content').focus();
+  if (moveFocus) {
+    cards('content').focus();
+    if (product) cards('product').scrollIntoView({ block: 'start' });
+  }
 }
 
 document.addEventListener('click', event => {
   const button = event.target.closest('button');
   if (!button) return;
+  if (button.hasAttribute('data-detail-photo')) {
+    const item = finds.find(find => find.id === button.closest('[data-find]').dataset.find);
+    const photo = item.photos[Number(button.dataset.detailPhoto)];
+    cards('detail-photo').src = photo.src;
+    cards('detail-photo').alt = photo.alt;
+    button.parentElement.querySelectorAll('button').forEach(thumbnail =>
+      thumbnail.setAttribute('aria-pressed', String(thumbnail === button)));
+  }
   if (button.dataset.step) {
     const controls = button.parentElement;
     const item = finds.find(find => find.id === controls.dataset.gallery);
     const index = (Number(controls.dataset.photo) + Number(button.dataset.step) + item.photos.length) % item.photos.length;
     const photo = item.photos[index];
-    const image = controls.previousElementSibling;
+    const image = controls.previousElementSibling.querySelector('img');
     image.src = photo.src;
     image.alt = photo.alt;
     controls.dataset.photo = index;
@@ -201,15 +248,25 @@ document.addEventListener('click', event => {
   }
   if (button.dataset.bagAdd) {
     const id = button.dataset.bagAdd;
-    const select = button.closest('.card').querySelector('[data-card-size]');
+    const itemView = button.closest('[data-find]');
+    const detail = itemView.classList.contains('product-detail');
+    const select = itemView.querySelector('[data-card-size]');
+    const selected = detail ? itemView.querySelector('[name="detail-size"]:checked')?.value : select?.value;
+    if (detail && sizesByItem[id] && !selected) {
+      cards('detail-status').textContent = 'Choose a size first.';
+      itemView.querySelector('[name="detail-size"]').focus();
+      return;
+    }
     if (select && !select.value) {
       select.required = true;
       select.reportValidity();
       select.focus();
       return;
     }
-    const key = variantKey(id, select?.value ?? '');
-    setQuantity(key, (bag.get(key) ?? 0) + 1);
+    const key = variantKey(id, selected ?? '');
+    const quantity = bag.get(key) ?? 0;
+    setQuantity(key, quantity + 1);
+    if (detail) cards('detail-status').textContent = quantity >= 99 ? 'This size already has 99 in your bag.' : 'Added to your bag.';
   }
   if (button.dataset.remove) {
     setQuantity(button.dataset.remove, 0);
@@ -231,7 +288,7 @@ document.addEventListener('click', event => {
   if (button.dataset.save) {
     const id = button.dataset.save;
     const container = button.closest('.cards');
-    const index = [...container.querySelectorAll('.heart')].indexOf(button);
+    const index = container ? [...container.querySelectorAll('.heart')].indexOf(button) : -1;
     if (saved.has(id)) saved.delete(id);
     else saved.add(id);
     try {
@@ -240,6 +297,16 @@ document.addEventListener('click', event => {
       // The current wishlist continues to work without browser storage.
     }
     refresh();
+    if (!container) {
+      button.setAttribute('aria-pressed', String(saved.has(id)));
+      button.textContent = saved.has(id) ? '♥ Saved to wishlist' : '♡ Save to wishlist';
+      return;
+    }
+    if (container.id === 'related-finds') {
+      button.setAttribute('aria-pressed', String(saved.has(id)));
+      button.textContent = saved.has(id) ? '♥' : '♡';
+      return;
+    }
     const hearts = container.querySelectorAll('.heart');
     (hearts[Math.min(index, hearts.length - 1)] ?? cards('empty').querySelector('a')).focus();
   }
