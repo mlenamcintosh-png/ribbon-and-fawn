@@ -270,3 +270,14 @@ body{padding-bottom:36px}
 #closet-fit-preview .custom-garment{cursor:grab;touch-action:none;user-select:none}
 #closet-fit-preview .custom-garment:active{cursor:grabbing}
 @media(max-width:450px){.closet-fit-layout{grid-template-columns:1fr}#closet-fit-preview{max-width:160px;margin:auto}}
+
+.new-quiz-choices{grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr))}
+.new-quiz-choices button{align-content:start;font:inherit;text-align:center;border-radius:7px}
+.new-quiz-choices button[aria-pressed=true]{border-color:var(--berry);outline:2px solid var(--berry);background:#f6d9e8}
+.new-quiz-choices .quiz-photo{aspect-ratio:4/5;object-fit:contain;background:#fff}
+.quiz-chart-pictures{display:flex;align-items:center;justify-content:center;gap:2px;width:100%}
+.quiz-chart-tile{display:block;flex:1;max-width:150px;aspect-ratio:132/162;background-size:300% 400%;background-repeat:no-repeat;background-color:white;border-radius:5px}
+.quiz-match .quiz-chart-pictures{justify-content:flex-start;max-width:260px}
+.quiz-navigation{display:flex;flex-wrap:wrap;gap:8px}
+.quiz-fabric{display:flex;min-height:78px;border-radius:5px;overflow:hidden}
+.quiz-fabric i{flex:1;background-color:var(--fabric-tone);background-position:center;background-size:cover}
