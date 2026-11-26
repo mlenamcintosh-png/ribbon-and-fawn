@@ -57,9 +57,6 @@ const finds = [
       { src: 'shoe-photos/224153.webp', alt: 'Another view of the pink bow Mary Janes and block heels' }
     ]
   },
-  { id: 'bow', name: 'Satin bow clip', category: 'Accessories', symbol: 'ෆ', color: '#f3ccd9' },
-  { id: 'tray', name: 'Heart trinket tray', category: 'Room', symbol: '♡', color: '#f4dfd5' },
-  { id: 'pouch', name: 'Gingham pouch', category: 'Accessories', symbol: '❀', color: '#e9d8ef' }
 ].map(item => ({ aesthetic: 'Coquette', ...item }));
 const orderSettings = {
   email: 'ribbonandfawn@gmail.com',
