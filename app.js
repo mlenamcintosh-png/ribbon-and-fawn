@@ -62,7 +62,7 @@ const finds = [
   { id: 'pouch', name: 'Gingham pouch', category: 'Accessories', symbol: '❀', color: '#e9d8ef' }
 ].map(item => ({ aesthetic: 'Coquette', ...item }));
 const orderSettings = {
-  email: '',
+  email: 'ribbonandfawn@gmail.com',
   pricesInCents: {},
   shippingInCents: null
 };
@@ -77,13 +77,25 @@ function writeLocal(key, value) {
     // Browser storage may be unavailable in some sessions.
   }
 }
+const sizesByItem = {
+  'pink-ballet-flats': ['US 6','US 6.5','US 7','US 7.5','US 8','US 9'],
+  'pink-bow-mary-janes': ['US 5','US 6','US 6.5','US 7','US 8','US 9','US 9.5'],
+  'pink-bow-platform-heels': ['US 5','US 6','US 6.5','US 7','US 8','US 9','US 9.5','US 10.5'],
+  'pink-lace-knit-sweater': ['XS','S','M','L','XL'],
+  'white-stockings': ['S','M','L','XL','2XL']
+};
+const variantKey = (id, size) => id + '|' + size;
 const bag = new Map();
 try {
   const stored = JSON.parse(readLocal(bagKey));
   if (stored && typeof stored === 'object') {
-    finds.filter(item => item.photos).forEach(item => {
-      const quantity = stored[item.id];
-      if (Number.isInteger(quantity) && quantity > 0 && quantity <= 99) bag.set(item.id, quantity);
+    Object.entries(stored).forEach(([key, quantity]) => {
+      const [id, size = ''] = key.split('|');
+      if (finds.some(item => item.id === id && item.photos) &&
+          (!size || sizesByItem[id]?.includes(size)) &&
+          Number.isInteger(quantity) && quantity > 0 && quantity <= 99) {
+        bag.set(variantKey(id, size), quantity);
+      }
     });
   }
 } catch {
@@ -135,6 +147,11 @@ function renderGallery(item) {
   </div>`;
 }
 
+function sizeOptions(id, selected = '') {
+  return '<option value="">Choose size</option>' + (sizesByItem[id] ?? []).map(size =>
+    `<option${selected === size ? ' selected' : ''}>${size}</option>`).join('');
+}
+
 function renderCards(container, items) {
   container.innerHTML = items.map(item => {
     const isSaved = saved.has(item.id);
@@ -142,6 +159,7 @@ function renderCards(container, items) {
       ${item.photos ? renderGallery(item) : `<div class="swatch" style="--swatch:${item.color}" aria-hidden="true">${item.symbol}</div>`}
       <h3>${item.name}</h3>
       <p>${item.category}</p>
+      ${sizesByItem[item.id] ? `<label class="card-size">Size<select data-card-size aria-label="Size for ${item.name}">${sizeOptions(item.id)}</select></label>` : ''}
       ${item.photos ? `<button class="bag-add" type="button" data-bag-add="${item.id}">Add to bag</button>` : ''}
       <button class="heart" type="button" data-save="${item.id}" aria-label="Save ${item.name} to wishlist" aria-pressed="${isSaved}">${isSaved ? '♥' : '♡'}</button>
     </article>`;
@@ -183,7 +201,15 @@ document.addEventListener('click', event => {
   }
   if (button.dataset.bagAdd) {
     const id = button.dataset.bagAdd;
-    setQuantity(id, (bag.get(id) ?? 0) + 1);
+    const select = button.closest('.card').querySelector('[data-card-size]');
+    if (select && !select.value) {
+      select.required = true;
+      select.reportValidity();
+      select.focus();
+      return;
+    }
+    const key = variantKey(id, select?.value ?? '');
+    setQuantity(key, (bag.get(key) ?? 0) + 1);
   }
   if (button.dataset.remove) {
     setQuantity(button.dataset.remove, 0);
@@ -219,66 +245,149 @@ document.addEventListener('click', event => {
   }
 });
 window.addEventListener('hashchange', () => showPage(true));
+const fulfillment = cards('fulfillment');
+const fulfillmentKey = 'ribbon-fawn-fulfillment';
+const referenceKey = 'ribbon-fawn-order-reference';
+const receipt = cards('order-receipt');
+const previousFulfillment = readLocal(fulfillmentKey);
+if (['Pickup','Meetup','Delivery'].includes(previousFulfillment)) fulfillment.value = previousFulfillment;
+
 function bagSummary() {
-  const lines = finds.filter(item => bag.has(item.id)).map(item => ({
-    item, quantity: bag.get(item.id), price: orderSettings.pricesInCents[item.id]
-  }));
-  const priced = lines.every(line => Number.isInteger(line.price));
-  const subtotal = priced ? lines.reduce((sum, line) => sum + line.price * line.quantity, 0) : null;
-  const shipping = orderSettings.shippingInCents;
-  return { lines, subtotal, shipping, total: subtotal !== null && shipping !== null ? subtotal + shipping : null };
+  const lines = [...bag].map(([key, quantity]) => {
+    const [id, size] = key.split('|');
+    return { key, item: finds.find(item => item.id === id), quantity, size, price: orderSettings.pricesInCents[id] };
+  });
+  const subtotal = lines.every(line => Number.isInteger(line.price))
+    ? lines.reduce((sum, line) => sum + line.price * line.quantity, 0) : null;
+  const shipping = fulfillment.value === 'Delivery' ? orderSettings.shippingInCents : null;
+  const total = subtotal !== null && shipping !== null ? subtotal + shipping : null;
+  return { lines, subtotal, shipping, total, method: fulfillment.value };
+}
+
+function totals(summary) {
+  return [
+    ['Items subtotal', summary.subtotal === null ? 'Pending prices' : money(summary.subtotal)],
+    ['Receiving method', summary.method],
+    ['Delivery or meetup fee, if applicable', summary.shipping === null ? 'Pending confirmation' : money(summary.shipping)],
+    ['Total due', summary.total === null ? 'Pending confirmation' : money(summary.total)]
+  ];
+}
+
+function renderTotals(target, summary) {
+  target.innerHTML = totals(summary).map(([label, value]) => `<dt>${label}</dt><dd>${value}</dd>`).join('');
 }
 
 function renderBag() {
-  const { lines, subtotal, shipping, total } = bagSummary();
+  const summary = bagSummary();
+  const { lines } = summary;
   cards('bag-count').textContent = lines.reduce((count, line) => count + line.quantity, 0);
   cards('bag-empty').hidden = lines.length > 0;
   cards('bag-checkout').hidden = lines.length === 0;
-  cards('bag-lines').innerHTML = lines.map(({ item, quantity, price }) => `
+  cards('bag-lines').innerHTML = lines.map(({ key, item, quantity, price, size }) => `
     <div class="bag-line">
       <strong>${item.name}</strong>
-      <label>Qty <input type="number" min="1" max="99" data-quantity="${item.id}" value="${quantity}"></label>
+      ${sizesByItem[item.id] ? `<label>Size <select data-variant="${key}">${sizeOptions(item.id, size)}</select></label>` : ''}
+      <label>Qty <input type="number" min="1" max="99" data-quantity="${key}" value="${quantity}"></label>
       <span>${Number.isInteger(price) ? `${money(price)} × ${quantity} = ${money(price * quantity)}` : 'Price pending'}</span>
-      <button type="button" data-remove="${item.id}" aria-label="Remove ${item.name}">Remove</button>
+      <button type="button" data-remove="${key}" aria-label="Remove ${item.name}${size ? ' ' + size : ''}">Remove</button>
     </div>`).join('');
-  cards('bag-total').innerHTML = `
-    <dt>Items subtotal</dt><dd>${subtotal === null ? 'Pending prices' : money(subtotal)}</dd>
-    <dt>Shipping or delivery</dt><dd>${shipping === null ? 'Pending confirmation' : money(shipping)}</dd>
-    <dt>Total due</dt><dd>${total === null ? 'Pending confirmation' : money(total)}</dd>`;
-  const available = total !== null && Boolean(orderSettings.email);
-  cards('order-email').disabled = !available;
-  cards('order-status').textContent = available ? 'Review and send the order from your email app.' :
-    'Ordering opens once prices, delivery costs, and the order email are confirmed.';
+  renderTotals(cards('bag-total'), summary);
+  const missing = lines.some(line => sizesByItem[line.item.id] && !line.size);
+  cards('order-email').disabled = missing || !lines.length;
+  cards('receipt-open').disabled = missing || !lines.length;
+  cards('order-email').textContent = summary.total === null ? 'Email for an order quote' : 'Prepare order email';
+  cards('order-status').textContent = missing ? 'Choose a size for each sized item.' :
+    summary.total === null ? 'Prices and any applicable delivery fee will be confirmed by email.' :
+    'Review and send your order from your email app.';
 }
 
-function setQuantity(id, quantity) {
-  if (quantity) bag.set(id, Math.min(quantity, 99));
-  else bag.delete(id);
+function setQuantity(key, quantity) {
+  if (quantity) bag.set(key, Math.min(quantity, 99));
+  else bag.delete(key);
+  saveBag();
+}
+
+function saveBag() {
   writeLocal(bagKey, JSON.stringify(Object.fromEntries(bag)));
   renderBag();
 }
 
 cards('bag').querySelector('h1').tabIndex = -1;
+fulfillment.addEventListener('change', () => {
+  writeLocal(fulfillmentKey, fulfillment.value);
+  renderBag();
+});
 cards('bag-lines').addEventListener('change', event => {
   const input = event.target;
-  if (!input.dataset.quantity) return;
-  const id = input.dataset.quantity;
-  setQuantity(id, input.validity.valid && input.value ? Number(input.value) : bag.get(id));
-  cards('bag-lines').querySelector(`[data-quantity="${id}"]`)?.focus();
+  if (input.dataset.quantity) {
+    const key = input.dataset.quantity;
+    setQuantity(key, input.validity.valid && input.value ? Number(input.value) : bag.get(key));
+    cards('bag-lines').querySelector(`[data-quantity="${key}"]`)?.focus();
+  }
+  if (input.dataset.variant) {
+    const previous = input.dataset.variant;
+    const key = variantKey(previous.split('|')[0], input.value);
+    if (key !== previous) {
+      const quantity = bag.get(previous) + (bag.get(key) ?? 0);
+      if (quantity > 99) {
+        input.value = previous.split('|')[1];
+        cards('order-status').textContent = 'This size already has too many items in the bag. Reduce its quantity first.';
+        return;
+      }
+      bag.delete(previous);
+      setQuantity(key, quantity);
+      cards('bag-lines').querySelector(`[data-variant="${key}"]`)?.focus();
+    }
+  }
 });
+
+let latestReference;
+function orderReference(summary) {
+  const signature = JSON.stringify([summary.lines.map(line => [line.key, line.quantity]).sort(), totals(summary)]);
+  try {
+    latestReference ??= JSON.parse(readLocal(referenceKey));
+  } catch {
+    latestReference = undefined;
+  }
+  if (latestReference?.signature !== signature || !/^RF-[A-Z0-9]{6}$/.test(latestReference.reference)) {
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const code = Array.from(crypto.getRandomValues(new Uint8Array(6)), n => alphabet[n % alphabet.length]).join('');
+    latestReference = { signature, reference: 'RF-' + code };
+    writeLocal(referenceKey, JSON.stringify(latestReference));
+  }
+  return latestReference.reference;
+}
+
+function orderLines(summary) {
+  return summary.lines.map(({ item, size, quantity, price }) =>
+    `${item.name}${size ? ' (' + size + ')' : ''} × ${quantity} · ${Number.isInteger(price) ? money(price * quantity) : 'Price pending'}`);
+}
 
 function openEmail(subject, body) {
   location.href = `mailto:${orderSettings.email}?${new URLSearchParams({ subject, body }).toString().replaceAll('+', '%20')}`;
 }
 
+cards('receipt-open').addEventListener('click', () => {
+  const summary = bagSummary();
+  cards('receipt-ref').textContent = orderReference(summary);
+  cards('receipt-lines').replaceChildren(...orderLines(summary).map(line => {
+    const item = document.createElement('li');
+    item.textContent = line;
+    return item;
+  }));
+  renderTotals(cards('receipt-totals'), summary);
+  receipt.showModal();
+});
+cards('receipt-print').addEventListener('click', () => window.print());
+
 cards('order-email').addEventListener('click', () => {
-  const { lines, subtotal, shipping, total } = bagSummary();
-  if (!lines.length || total === null || !orderSettings.email) return;
-  const items = lines.map(({ item, quantity, price }) => `${item.name} × ${quantity}: ${money(price * quantity)}`);
-  openEmail('Ribbon & Fawn order', [...items, '', `Items subtotal: ${money(subtotal)}`,
-    `Shipping or delivery: ${money(shipping)}`, `Total due: ${money(total)}`, '',
-    'Shoe sizes:', 'Preferred delivery or pickup:', '',
-    'I understand that full payment, including any shipping, is due before I receive my order.'].join('\n'));
+  const summary = bagSummary();
+  const reference = orderReference(summary);
+  const purpose = summary.total === null ? 'quote request' : 'order request';
+  openEmail('Ribbon & Fawn ' + purpose + ' · ' + reference,
+    [reference, 'Payment pending', '', ...orderLines(summary), '',
+    ...totals(summary).map(([label, value]) => label + ': ' + value), '',
+    'I understand that full payment, including any applicable delivery fee, is due before I receive my order.'].join('\n'));
 });
 
 cards('suggestion').value = readLocal(suggestionKey) ?? '';

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=photo-quiz">
-<script src="app.js?v=photo-quiz" defer></script>
+<link rel="stylesheet" href="style.css?v=order-summary">
+<script src="app.js?v=order-summary" defer></script>
 <script src="dressing-room.js?v=9" defer></script>
 <script src="style-studio.js?v=photo-quiz" defer></script>
 </head>
@@ -26,7 +26,7 @@
       <a href="#home">Home</a>
       <a href="#finds">Shopping finds</a>
       <a href="#dressing-room">Dressing Room</a>
-      <a href="#journal">Journal</a><a href="#style-quiz">Style quiz</a>
+      <a href="#journal">Journal</a><a href="#contact">Contact</a><a href="#style-quiz">Style quiz</a>
       <a href="#bag">My bag <span id="bag-count">0</span></a>
       <a href="#suggestions">Suggestions</a>
       <a href="#wishlist">Wishlist <span id="count">0</span></a>
@@ -94,10 +94,14 @@
     <p id="bag-empty">Your bag is empty. <a href="#finds">Browse the finds</a>.</p>
     <div id="bag-lines"></div>
     <div id="bag-checkout" hidden>
+      <label class="fulfillment-label">How would you like to receive your order?
+        <select id="fulfillment"><option>Pickup</option><option>Meetup</option><option>Delivery</option></select>
+      </label>
       <dl id="bag-total"></dl>
       <p>Each line is the price per item multiplied by its quantity. The total includes any applicable shipping or delivery charge.</p>
       <p><strong>Payment is due in full before your items are shipped, delivered, or handed over. Any applicable shipping must be paid with your order.</strong></p>
       <button type="button" class="ribbon-button" id="order-email">Prepare order email</button>
+      <button type="button" class="ribbon-button" id="receipt-open">View order summary</button>
       <p id="order-status" role="status"></p>
     </div>
   </section>
@@ -183,7 +187,12 @@
     <p class="dressing-note">Closet photos and saved outfits stay in this browser.</p>
     <p id="dressing-status" role="status"></p>
   </section>
-<section id="style-quiz" class="framed inner" data-page hidden><h1>What’s your style?</h1><div id="quiz-content"></div></section></main>
+<section id="style-quiz" class="framed inner" data-page hidden><h1>What’s your style?</h1><div id="quiz-content"></div></section><section id="contact" class="framed inner" data-page hidden>
+  <h1>Contact Ribbon &amp; Fawn</h1>
+  <p>Email <a href="mailto:ribbonandfawn@gmail.com">ribbonandfawn@gmail.com</a></p>
+  <p>WhatsApp <a href="https://wa.me/12462578063" target="_blank" rel="noopener noreferrer">+1 246 257-8063</a></p>
+  <p>For questions about a bag, include the RF reference from your order summary.</p>
+</section></main>
 </div>
 <section id="site-music" class="framed inner site-music" hidden aria-label="YouTube music player"><h2>Ribbon &amp; Fawn soundtrack</h2><div id="music-player"></div><a href="https://youtu.be/jcPmCOUrwNA" target="_blank" rel="noopener noreferrer">Open the track on YouTube</a></section><footer>Ribbon &amp; Fawn <span aria-hidden="true">♡</span></footer>
 </div>
@@ -197,5 +206,13 @@
     <p id="fawn-answer" aria-live="polite"></p>
   </div>
 </details>
-<dialog id="closet-delete-dialog" aria-labelledby="closet-delete-title" aria-describedby="closet-delete-warning"><h2 id="closet-delete-title">Delete this wardrobe piece?</h2><p id="closet-delete-warning"></p><form method="dialog"><button class="ribbon-button" value="cancel" autofocus>Cancel</button> <button class="ribbon-button" value="delete">Delete piece</button></form></dialog></body>
+<dialog id="closet-delete-dialog" aria-labelledby="closet-delete-title" aria-describedby="closet-delete-warning"><h2 id="closet-delete-title">Delete this wardrobe piece?</h2><p id="closet-delete-warning"></p><form method="dialog"><button class="ribbon-button" value="cancel" autofocus>Cancel</button> <button class="ribbon-button" value="delete">Delete piece</button></form></dialog><dialog id="order-receipt" aria-labelledby="receipt-title">
+  <div class="receipt-paper"><p class="receipt-brand">Ribbon &amp; Fawn ♡</p><h2 id="receipt-title">Order summary</h2>
+    <p><strong id="receipt-ref"></strong> · Payment pending</p>
+    <ul id="receipt-lines"></ul><dl id="receipt-totals"></dl>
+    <p>Pay in full before receiving your items, including any applicable delivery costs.</p>
+    <p>ribbonandfawn@gmail.com · +1 246 257-8063</p>
+  </div>
+  <form method="dialog"><button class="ribbon-button">Close</button> <button class="ribbon-button" type="button" id="receipt-print">Print or save PDF</button></form>
+</dialog></body>
 </html>

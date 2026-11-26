@@ -224,3 +224,19 @@ body{padding-bottom:36px}
 .quiz-photo-option button{height:100%;text-align:left}
 .quiz-credit{font-size:.75rem}
 .quiz-match .quiz-photo{width:min(100%,155px)}
+
+.card-size{display:grid;gap:3px;margin:6px 0;font-size:.85rem}
+.card-size select,.bag-line select,#fulfillment{max-width:100%;padding:5px;border:1px solid var(--line);background:var(--cream);color:var(--ink);font:inherit}
+.fulfillment-label{display:grid;gap:4px;margin-top:14px}
+#order-receipt{width:min(490px,calc(100% - 24px));max-height:90vh;overflow:auto;border:3px double var(--line);background:var(--cream);color:var(--ink)}
+#order-receipt::backdrop{background:#663e5066}
+.receipt-paper{border:7px double #d59cb5;padding:13px;background:repeating-linear-gradient(90deg,#fff8fb 0 14px,#fceef4 14px 28px);overflow-wrap:anywhere;margin-bottom:10px}
+.receipt-brand{font:700 1.25rem 'Fraunces',Georgia,serif;color:var(--berry);margin:0 0 5px}
+#receipt-totals{display:grid;grid-template-columns:1fr auto;gap:5px 10px}
+#receipt-totals dd{margin:0;text-align:right}
+@media print{
+  body:has(#order-receipt[open]) > :not(#order-receipt){display:none!important}
+  #order-receipt[open]{position:static;width:auto;max-height:none;overflow:visible;border:0}
+  #order-receipt::backdrop,#order-receipt form{display:none}
+  .receipt-paper{print-color-adjust:exact}
+}
