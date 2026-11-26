@@ -97,6 +97,7 @@
         pair.className = 'fitted-pair fitted-' + fitted;
         pair.setAttribute('role', 'img');
         pair.setAttribute('aria-label', piece.name);
+        pair.style.setProperty('--garment', 'url("dressing-assets/' + fitted + '.webp")');
         pair.append(document.createElement('span'), document.createElement('span'));
         return pair;
       }

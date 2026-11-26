@@ -140,20 +140,21 @@ body{padding-bottom:36px}
 .form-foot.right,.fitted-pair:not(.fitted-stockings):not(.fitted-warmers) span:last-child{right:31%}
 .fitted-pair{position:absolute;inset:0;pointer-events:none}
 .fitted-stockings{z-index:2}
-.fitted-stockings span{background:linear-gradient(90deg,#dfd9d8,#fffdfc 52%,#ede6e5);outline:1px solid #bfa7a9}
 .fitted-warmers{z-index:3}
-.fitted-warmers span{top:70%;width:16%;height:15%;border-radius:24% 24% 18% 18%;border:1px solid #d6bf9e;background:repeating-linear-gradient(0deg,#d6bf9e55 0 2px,transparent 2px 7px),repeating-linear-gradient(90deg,#f9ecd5 0 3px,#ead8b9 3px 5px)}
+.fitted-warmers span{top:70%;width:16%;height:15%}
 .fitted-warmers span:first-child{left:32%}
 .fitted-warmers span:last-child{right:32%}
 .fitted-flats,.fitted-mary-janes,.fitted-heels{z-index:4}
-.fitted-flats span,.fitted-mary-janes span,.fitted-heels span{border:1px solid #b76c8e;border-bottom:2px solid #955876;background:#efaecb;text-align:center;color:#8d4666;font-size:clamp(.5rem,2vw,1rem)}
-.fitted-mary-janes span{background:linear-gradient(#cc7f9f 0 20%,#f6c6d9 20%);border-bottom-width:4px}
-.fitted-heels span{background:#e691bb;border-bottom:6px double #955876}
-.fitted-flats span::after,.fitted-heels span::after{content:'୨୧'}
-.fitted-mary-janes span::after{content:'♡'}
 .dress-layer-top{top:14%;left:11%;width:78%;height:39%}
 .dress-layer-bottom{top:41%;height:35%;z-index:4}
 .dress-layer-dress{top:15%;height:60%}
 .dress-layer-shoes{bottom:9%;height:12%;z-index:4}
 .dress-layer-stockings{top:43%;left:31%;width:38%;height:45%;z-index:2}
 .dress-layer-warmers{top:69%;left:31%;width:38%;height:17%;z-index:3}
+
+.fitted-pair span{background-image:var(--garment);background-size:200% 100%;background-repeat:no-repeat;filter:drop-shadow(0 1px 1px #633e5025)}
+.fitted-pair span:first-child{background-position:left center}
+.fitted-pair span:last-child{background-position:right center}
+.fitted-stockings span{border-radius:0}
+.fitted-flats span,.fitted-mary-janes span,.fitted-heels span{top:81%;height:9%;border-radius:0}
+.fitted-heels span{top:80%;height:10%}
