@@ -258,3 +258,15 @@ body{padding-bottom:36px}
 .detail-sizes input:checked+span,.detail-heart[aria-pressed=true]{background:#f2cbde;border-color:var(--berry)}
 .detail-sizes input:focus-visible+span{outline:2px solid var(--berry)}
 @media(max-width:650px){.product-detail{grid-template-columns:1fr}}
+
+#upload-tip,#closet-fit{max-width:min(590px,calc(100% - 24px));max-height:90vh;overflow:auto;border:4px double var(--line);background:var(--cream);color:var(--ink)}
+#upload-tip::backdrop,#closet-fit::backdrop{background:#663e5066}
+#upload-tip-open{margin:7px 8px 0}
+.closet-fit-layout{display:grid;grid-template-columns:minmax(140px,210px) minmax(165px,1fr);gap:12px}
+#closet-fit-form{display:grid;align-content:start;gap:7px}
+#closet-fit-form input[type=range]{display:block;width:100%;accent-color:#ae6586}
+#closet-fit-status:empty{display:none}
+.mannequin-fit .custom-garment{height:auto;transform:translate(-50%,-50%);object-fit:contain}
+#closet-fit-preview .custom-garment{cursor:grab;touch-action:none;user-select:none}
+#closet-fit-preview .custom-garment:active{cursor:grabbing}
+@media(max-width:450px){.closet-fit-layout{grid-template-columns:1fr}#closet-fit-preview{max-width:160px;margin:auto}}

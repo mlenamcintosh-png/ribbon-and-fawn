@@ -103,6 +103,7 @@
     if (piece.category !== 'Shoes') element.append(toggle);
     if (!onBoard && !piece.id.startsWith('shop-')) {
       const remove = button('Delete', 'Delete ' + piece.name + ' from wardrobe', () => confirmDeletion(piece, remove));
+      if (piece.category !== 'Shoes') element.append(button('Fit', 'Fit ' + piece.name + ' to mannequin', () => openFitting(piece)));
       element.append(remove);
     }
     return element;
@@ -190,7 +191,7 @@
     mannequin.classList.toggle('wearing-shoes', layers.has('shoes'));
     const clothes = [...layers].map(([slot, piece]) => {
       const fitted = fittedPieces[piece.id];
-      if (slot === 'stockings' || slot === 'warmers') {
+      if (!piece.fit && (slot === 'stockings' || slot === 'warmers')) {
         const pair = document.createElement('div');
         pair.className = 'fitted-pair fitted-' + slot;
         pair.setAttribute('role', 'img');
@@ -216,6 +217,10 @@
       if (!piece.cutout && piece.id.startsWith('shop-')) image.classList.add('dress-layer-photo');
       image.src = piece.cutout ?? piece.image;
       image.alt = piece.name;
+      if (piece.fit) {
+        image.classList.add('custom-garment');
+        applyGarmentFit(image, piece.fit);
+      }
       return image;
     });
     byId('dress-form-layers').replaceChildren(...clothes);
@@ -251,6 +256,190 @@
     }));
   }
 
+  const tip = byId('upload-tip');
+  const fitDialog = byId('closet-fit');
+  const fitForm = byId('closet-fit-form');
+  const removeBackground = byId('closet-remove-bg');
+  const fitInputs = ['x', 'y', 'size'].map(name => byId('closet-fit-' + name));
+  const defaultFit = {
+    Tops: [50, 32, 56], Bottoms: [50, 59, 44], Dresses: [50, 43, 56],
+    Stockings: [50, 64, 35], 'Leg warmers': [50, 77, 32], Accessories: [68, 28, 22]
+  };
+  let activeFit;
+  let cutout;
+  let previewImage;
+
+  byId('upload-tip-open').addEventListener('click', () => tip.showModal());
+  let tipShown = false;
+  byId('closet-drawer').addEventListener('toggle', event => {
+    if (!event.target.open || tipShown || fitDialog.open || tip.open) return;
+    tipShown = true;
+    tip.showModal();
+  });
+
+  function fitValues() {
+    const [x, y, size] = fitInputs.map(input => Number(input.value));
+    return { x, y, size };
+  }
+
+  function applyGarmentFit(image, { x, y, size }) {
+    image.style.left = x + '%';
+    image.style.top = y + '%';
+    image.style.width = size + '%';
+    image.style.right = 'auto';
+    image.style.bottom = 'auto';
+  }
+
+  function openFitting(piece, isNew = false) {
+    activeFit = { piece, isNew };
+    cutout = piece.cutout;
+    const initial = piece.fit ? [piece.fit.x, piece.fit.y, piece.fit.size] : defaultFit[piece.category] ?? defaultFit.Tops;
+    fitInputs.forEach((input, index) => { input.value = initial[index]; });
+    removeBackground.checked = Boolean(cutout);
+    removeBackground.disabled = false;
+    fitForm.querySelector('[type="submit"]').disabled = false;
+    byId('closet-fit-status').textContent = '';
+    const stage = byId('mannequin-fit').parentElement.cloneNode(true);
+    stage.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+    const form = stage.querySelector('.mannequin-fit');
+    form.classList.remove('wearing-stockings', 'wearing-sweater');
+    form.querySelector('[role="group"]').replaceChildren();
+    previewImage = document.createElement('img');
+    previewImage.className = 'dress-layer custom-garment';
+    previewImage.alt = piece.name;
+    previewImage.draggable = false;
+    previewImage.src = cutout ?? piece.image;
+    applyGarmentFit(previewImage, fitValues());
+    form.append(previewImage);
+    byId('closet-fit-preview').replaceChildren(stage);
+    let drag;
+    previewImage.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      previewImage.setPointerCapture(event.pointerId);
+      const bounds = form.getBoundingClientRect();
+      drag = { x: event.clientX, y: event.clientY, bounds, start: fitValues() };
+    });
+    previewImage.addEventListener('pointermove', event => {
+      if (!drag || !previewImage.hasPointerCapture(event.pointerId)) return;
+      fitInputs[0].value = Math.round(drag.start.x + (event.clientX - drag.x) / drag.bounds.width * 100);
+      fitInputs[1].value = Math.round(drag.start.y + (event.clientY - drag.y) / drag.bounds.height * 100);
+      applyGarmentFit(previewImage, fitValues());
+    });
+    previewImage.addEventListener('lostpointercapture', () => { drag = undefined; });
+    fitDialog.showModal();
+  }
+
+  fitInputs.forEach(input => input.addEventListener('input', () => applyGarmentFit(previewImage, fitValues())));
+
+  async function cutPlainBackground(source) {
+    const image = new Image();
+    image.src = source;
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    const { naturalWidth: width, naturalHeight: height } = image;
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, width, height);
+    const data = pixels.data;
+    const corners = [0, width - 1, width * (height - 1), width * height - 1];
+    const reference = corners.map(index => Array.from(data.slice(index * 4, index * 4 + 3)));
+    const visited = new Uint8Array(width * height);
+    const queue = [];
+    function visit(index) {
+      if (visited[index]) return;
+      visited[index] = 1;
+      const p = index * 4;
+      const matches = data[p + 3] < 20 || reference.some(rgb =>
+        rgb.every((channel, i) => Math.abs(channel - data[p + i]) <= 24));
+      if (matches) {
+        data[p + 3] = 0;
+        queue.push(index);
+      }
+    }
+    for (let x = 0; x < width; x++) {
+      visit(x);
+      visit((height - 1) * width + x);
+    }
+    for (let y = 0; y < height; y++) {
+      visit(y * width);
+      visit((y + 1) * width - 1);
+    }
+    for (let i = 0; i < queue.length; i++) {
+      const p = queue[i], x = p % width;
+      if (x > 0) visit(p - 1);
+      if (x < width - 1) visit(p + 1);
+      if (p >= width) visit(p - width);
+      if (p < width * (height - 1)) visit(p + width);
+    }
+    if (queue.length > width * height * .96 || queue.length < width * height * .03) {
+      throw Error('The background could not be separated cleanly. Try a higher-contrast photo or a transparent cutout.');
+    }
+    context.putImageData(pixels, 0, 0);
+    let left = width, right = -1, top = height, bottom = -1;
+    for (let i = 0; i < width * height; i++) {
+      if (data[i * 4 + 3] < 20) continue;
+      const x = i % width, y = Math.floor(i / width);
+      left = Math.min(left, x); right = Math.max(right, x);
+      top = Math.min(top, y); bottom = Math.max(bottom, y);
+    }
+    if (right < left) throw Error('No garment was found in this photo.');
+    const cropped = document.createElement('canvas');
+    cropped.width = right - left + 1;
+    cropped.height = bottom - top + 1;
+    cropped.getContext('2d').drawImage(canvas, -left, -top);
+    return cropped.toDataURL('image/webp', .82);
+  }
+
+  removeBackground.addEventListener('change', async () => {
+    const session = activeFit;
+    const message = byId('closet-fit-status');
+    const save = fitForm.querySelector('[type="submit"]');
+    if (!removeBackground.checked) {
+      previewImage.src = session.piece.image;
+      message.textContent = '';
+      return;
+    }
+    removeBackground.disabled = true;
+    save.disabled = true;
+    try {
+      const result = cutout ?? await cutPlainBackground(session.piece.image);
+      if (activeFit !== session) return;
+      cutout = result;
+      previewImage.src = result;
+      message.textContent = 'Check the edges before saving.';
+    } catch (error) {
+      if (activeFit !== session) return;
+      removeBackground.checked = false;
+      message.textContent = error.message;
+    } finally {
+      if (activeFit === session) {
+        removeBackground.disabled = false;
+        save.disabled = false;
+      }
+    }
+  });
+
+  byId('closet-fit-cancel').addEventListener('click', () => fitDialog.close());
+  fitDialog.addEventListener('close', () => { activeFit = undefined; });
+  fitForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const { piece, isNew } = activeFit;
+    const fitted = { ...piece, fit: fitValues(), cutout: removeBackground.checked ? cutout : undefined };
+    const closet = isNew ? [...state.closet, fitted] : state.closet.map(item => item.id === piece.id ? fitted : item);
+    const board = [...state.board.filter(id => id !== piece.id), piece.id];
+    if (!commit({ ...state, closet, board }, piece.name + ' fitted and added to your outfit.')) {
+      byId('closet-fit-status').textContent = status.textContent;
+      return;
+    }
+    fitDialog.close();
+    if (isNew) closetForm.reset();
+    byId('wardrobe').open = true;
+    byId('closet-drawer').open = false;
+    byId('wardrobe').querySelector('summary').focus();
+  });
+
   async function photoPreview(file) {
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw Error('Choose a JPG, PNG, or WebP photo.');
     if (file.size > 15 * 1024 * 1024) throw Error('Choose a photo under 15 MB.');
@@ -280,6 +469,10 @@
     try {
       const image = await photoPreview(data.get('photo'));
       const piece = { id: crypto.randomUUID(), name, category: data.get('category'), image };
+      if (piece.category !== 'Shoes') {
+        openFitting(piece, true);
+        return;
+      }
       if (commit({ ...state, closet: [...state.closet, piece] }, name + ' hung in your wardrobe.')) {
         closetForm.reset();
         byId('wardrobe').open = true;
