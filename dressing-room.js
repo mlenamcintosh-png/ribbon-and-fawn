@@ -270,9 +270,13 @@
   let previewImage;
 
   byId('upload-tip-open').addEventListener('click', () => tip.showModal());
+  const tipKey = 'ribbon-fawn-hide-upload-tip';
+  const dismissTip = byId('upload-tip-dismiss');
+  dismissTip.checked = readLocal(tipKey) === 'yes';
+  dismissTip.addEventListener('change', () => writeLocal(tipKey, dismissTip.checked ? 'yes' : 'no'));
   let tipShown = false;
   byId('closet-drawer').addEventListener('toggle', event => {
-    if (!event.target.open || tipShown || fitDialog.open || tip.open) return;
+    if (!event.target.open || dismissTip.checked || tipShown || fitDialog.open || tip.open) return;
     tipShown = true;
     tip.showModal();
   });
@@ -344,15 +348,18 @@
     const pixels = context.getImageData(0, 0, width, height);
     const data = pixels.data;
     const corners = [0, width - 1, width * (height - 1), width * height - 1];
-    const reference = corners.map(index => Array.from(data.slice(index * 4, index * 4 + 3)));
+    const samples = corners.filter(index => data[index * 4 + 3] >= 20)
+      .map(index => Array.from(data.slice(index * 4, index * 4 + 3)));
+    const similar = (a, b) => a.every((value, channel) => Math.abs(value - b[channel]) <= 14);
+    const reference = samples.find(sample => samples.filter(other => similar(sample, other)).length >= 3);
+    if (samples.length && !reference) throw Error('Try tracing the garment outline for this photo.');
     const visited = new Uint8Array(width * height);
     const queue = [];
     function visit(index) {
       if (visited[index]) return;
       visited[index] = 1;
       const p = index * 4;
-      const matches = data[p + 3] < 20 || reference.some(rgb =>
-        rgb.every((channel, i) => Math.abs(channel - data[p + i]) <= 24));
+      const matches = data[p + 3] < 20 || (reference && similar(reference, data.subarray(p, p + 3)));
       if (matches) {
         data[p + 3] = 0;
         queue.push(index);
@@ -389,7 +396,7 @@
     cropped.width = right - left + 1;
     cropped.height = bottom - top + 1;
     cropped.getContext('2d').drawImage(canvas, -left, -top);
-    return cropped.toDataURL('image/webp', .82);
+    return cropped.toDataURL('image/png');
   }
 
   removeBackground.addEventListener('change', async () => {
@@ -419,6 +426,71 @@
         save.disabled = false;
       }
     }
+  });
+
+  const outline = byId('closet-outline');
+  const outlineCanvas = byId('outline-canvas');
+  const outlineContext = outlineCanvas.getContext('2d');
+  const useOutline = byId('outline-apply');
+  let outlineImage;
+  let points = [];
+
+  function drawOutline() {
+    outlineContext.clearRect(0, 0, outlineCanvas.width, outlineCanvas.height);
+    outlineContext.drawImage(outlineImage, 0, 0);
+    if (points.length) {
+      outlineContext.beginPath();
+      points.forEach(([x, y], i) => i ? outlineContext.lineTo(x, y) : outlineContext.moveTo(x, y));
+      outlineContext.closePath();
+      outlineContext.strokeStyle = '#a53168';
+      outlineContext.lineWidth = 2;
+      outlineContext.stroke();
+      points.forEach(([x, y]) => outlineContext.fillRect(x - 2, y - 2, 4, 4));
+    }
+    useOutline.disabled = points.length < 3;
+  }
+
+  byId('closet-outline-open').addEventListener('click', async () => {
+    const session = activeFit;
+    const image = new Image();
+    image.src = session.piece.image;
+    try { await image.decode(); } catch {
+      byId('closet-fit-status').textContent = 'This photo could not be opened.';
+      return;
+    }
+    if (activeFit !== session || outline.open) return;
+    outlineImage = image;
+    points = [];
+    outlineCanvas.width = image.naturalWidth;
+    outlineCanvas.height = image.naturalHeight;
+    drawOutline();
+    outline.showModal();
+  });
+
+  outlineCanvas.addEventListener('click', event => {
+    const box = outlineCanvas.getBoundingClientRect();
+    points.push([(event.clientX - box.left) * outlineCanvas.width / box.width,
+      (event.clientY - box.top) * outlineCanvas.height / box.height]);
+    drawOutline();
+  });
+  byId('outline-undo').addEventListener('click', () => { points.pop(); drawOutline(); });
+  useOutline.addEventListener('click', () => {
+    const left = Math.max(0, Math.floor(Math.min(...points.map(([x]) => x))));
+    const top = Math.max(0, Math.floor(Math.min(...points.map(([, y]) => y))));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.ceil(Math.max(...points.map(([x]) => x))) - left);
+    canvas.height = Math.max(1, Math.ceil(Math.max(...points.map(([, y]) => y))) - top);
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    points.forEach(([x, y], i) => i ? ctx.lineTo(x - left, y - top) : ctx.moveTo(x - left, y - top));
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(outlineImage, -left, -top);
+    cutout = canvas.toDataURL('image/png');
+    removeBackground.checked = true;
+    previewImage.src = cutout;
+    byId('closet-fit-status').textContent = 'Outline applied. Save fit to keep it.';
+    outline.close();
   });
 
   byId('closet-fit-cancel').addEventListener('click', () => fitDialog.close());

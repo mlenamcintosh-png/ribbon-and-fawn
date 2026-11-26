@@ -362,7 +362,7 @@ function renderBag() {
   cards('order-email').textContent = summary.total === null ? 'Email for an order quote' : 'Prepare order email';
   cards('order-status').textContent = missing ? 'Choose a size for each sized item.' :
     summary.total === null ? 'Any unlisted item prices will be confirmed by email.' :
-    'Review and send your order from your email app.';
+    'Review and send your order in Gmail.';
 }
 
 function setQuantity(key, quantity) {
@@ -428,7 +428,8 @@ function orderLines(summary) {
 }
 
 function openEmail(subject, body) {
-  location.href = `mailto:${orderSettings.email}?${new URLSearchParams({ subject, body }).toString().replaceAll('+', '%20')}`;
+  const query = new URLSearchParams({ view: 'cm', fs: '1', to: orderSettings.email, su: subject, body });
+  window.open('https://mail.google.com/mail/?' + query, '_blank', 'noopener,noreferrer');
 }
 
 cards('receipt-open').addEventListener('click', () => {
@@ -468,7 +469,7 @@ cards('suggestion-form').addEventListener('submit', event => {
     return;
   }
   openEmail('Ribbon & Fawn suggestion', message);
-  cards('suggestion-status').textContent = 'Send your suggestion from your email app.';
+  cards('suggestion-status').textContent = 'Send your suggestion in Gmail.';
 });
 
 const fawnAliases = {

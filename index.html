@@ -6,8 +6,8 @@
 <meta name="description" content="A pink scrapbook for shopping finds and outfit inspiration.">
 <title>Ribbon &amp; Fawn</title>
 <link rel="stylesheet" href="style.css?v=ask-fawn">
-<script src="app.js?v=photo-catalog" defer></script>
-<script src="dressing-room.js?v=10" defer></script>
+<script src="app.js?v=gmail-wardrobe" defer></script>
+<script src="dressing-room.js?v=11" defer></script>
 <script src="style-studio.js?v=your-collages" defer></script>
 </head>
 <body>
@@ -165,7 +165,7 @@
         <div class="dress-form-stage">
           <div class="mannequin-fit" id="mannequin-fit">
           <div class="dress-form-stand" aria-hidden="true"></div>
-          <div class="dress-form-neck" aria-hidden="true"><span>୨୧</span></div>
+          <div class="dress-form-neck" aria-hidden="true"></div>
           <div class="dress-form-limbs" aria-hidden="true">
             <span class="form-arm left"></span><span class="form-arm right"></span>
             <span class="form-leg left"></span><span class="form-leg right"></span>
@@ -191,7 +191,7 @@
   </section>
 <section id="style-quiz" class="framed inner" data-page hidden><h1>What’s your style?</h1><div id="quiz-content"></div></section><section id="contact" class="framed inner" data-page hidden>
   <h1>Contact Ribbon &amp; Fawn</h1>
-  <p>Email <a href="mailto:ribbonandfawn@gmail.com">ribbonandfawn@gmail.com</a></p>
+  <p>Email <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=ribbonandfawn%40gmail.com" target="_blank" rel="noopener noreferrer">ribbonandfawn@gmail.com</a></p>
   <p>WhatsApp <a href="https://wa.me/12462578063" target="_blank" rel="noopener noreferrer">+1 246 257-8063</a></p>
   <p>For questions about a bag, include the RF reference from your order summary.</p>
 </section></main>
@@ -225,7 +225,7 @@
   <h2 id="upload-tip-title">A little photo tip ♡</h2>
   <p>Use a plain, solid background for clothes you upload. Lay the piece flat, show the whole garment, and choose a background that contrasts with its colour.</p>
   <p>Already have a transparent PNG or WebP? You can use that too.</p>
-  <form method="dialog"><button class="ribbon-button">Got it</button></form>
+  <form method="dialog"><p><label><input type="checkbox" id="upload-tip-dismiss"> Don’t show again</label></p><button class="ribbon-button">Got it</button></form>
 </dialog>
 <dialog id="closet-fit" aria-labelledby="closet-fit-title">
   <h2 id="closet-fit-title">Fit to mannequin</h2>
@@ -234,6 +234,7 @@
     <div id="closet-fit-preview"></div>
     <form id="closet-fit-form">
       <label><input type="checkbox" id="closet-remove-bg"> Remove plain background</label>
+      <button class="ribbon-button" id="closet-outline-open" type="button">Trace garment outline</button>
       <label>Left / right <input id="closet-fit-x" type="range" min="0" max="100"></label>
       <label>Up / down <input id="closet-fit-y" type="range" min="0" max="100"></label>
       <label>Size <input id="closet-fit-size" type="range" min="10" max="100"></label>
@@ -243,5 +244,12 @@
     </form>
   </div>
 </dialog>
-</body>
+<dialog id="closet-outline" aria-labelledby="outline-title" style="max-width:calc(100% - 24px)">
+  <h2 id="outline-title">Trace the garment</h2>
+  <p>Tap points around the edge. Everything inside the outline will be kept.</p>
+  <canvas id="outline-canvas" style="display:block;max-width:100%;height:auto;cursor:crosshair"></canvas>
+  <button type="button" id="outline-undo">Undo point</button>
+  <button type="button" id="outline-apply" disabled>Use outline</button>
+  <form method="dialog"><button>Cancel</button></form>
+</dialog></body>
 </html>
