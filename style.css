@@ -284,3 +284,11 @@ body{padding-bottom:36px}
 
 .quiz-user-collage{display:block;width:100%;aspect-ratio:210/370;background-size:300% 100%;background-repeat:no-repeat;background-color:#fff;border-radius:5px}
 .quiz-match .quiz-user-collage{max-width:190px}
+
+.card-shop{display:inline-block;margin:5px 38px 0 0}
+.card-price{font-weight:700}
+.fawn-form{margin-top:8px;font-size:.9rem}
+.fawn-form>div{display:flex;gap:5px}
+.fawn-form input{min-width:0;flex:1;padding:5px;border:1px solid var(--line);font:inherit}
+#fawn-answer ul{margin:5px 0;padding-left:20px}
+.fawn-panel{max-height:min(60vh,420px);overflow:auto}

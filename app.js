@@ -159,8 +159,8 @@ function renderCards(container, items) {
       ${item.photos ? renderGallery(item) : `<div class="swatch" style="--swatch:${item.color}" aria-hidden="true">${item.symbol}</div>`}
       <h3><a href="#item/${item.id}">${item.name}</a></h3>
       <p>${item.category}</p>
-      ${sizesByItem[item.id] ? `<label class="card-size">Size<select data-card-size aria-label="Size for ${item.name}">${sizeOptions(item.id)}</select></label>` : ''}
-      ${item.photos ? `<button class="bag-add" type="button" data-bag-add="${item.id}">Add to bag</button>` : ''}
+      ${Number.isInteger(orderSettings.pricesInCents[item.id]) ? `<p class="card-price">${money(orderSettings.pricesInCents[item.id])}</p>` : ''}
+      ${item.photos ? `<a class="card-shop" href="#item/${item.id}">View item</a>` : ''}
       <button class="heart" type="button" data-save="${item.id}" aria-label="Save ${item.name} to wishlist" aria-pressed="${isSaved}">${isSaved ? '♥' : '♡'}</button>
     </article>`;
   }).join('');
@@ -250,17 +250,10 @@ document.addEventListener('click', event => {
     const id = button.dataset.bagAdd;
     const itemView = button.closest('[data-find]');
     const detail = itemView.classList.contains('product-detail');
-    const select = itemView.querySelector('[data-card-size]');
-    const selected = detail ? itemView.querySelector('[name="detail-size"]:checked')?.value : select?.value;
+    const selected = itemView.querySelector('[name="detail-size"]:checked')?.value;
     if (detail && sizesByItem[id] && !selected) {
       cards('detail-status').textContent = 'Choose a size first.';
       itemView.querySelector('[name="detail-size"]').focus();
-      return;
-    }
-    if (select && !select.value) {
-      select.required = true;
-      select.reportValidity();
-      select.focus();
       return;
     }
     const key = variantKey(id, selected ?? '');
@@ -275,8 +268,8 @@ document.addEventListener('click', event => {
   if (button.dataset.help) {
     const answers = {
       shoes: 'Open <a href="#finds">Shopping finds</a> and choose Shoes. Use the little arrows to see each angle.',
-      save: 'Tap a heart to save a find, or add shoes to your bag. Both are saved in this browser for your next visit.',
-      pay: 'Open <a href="#bag">My bag</a> to review your items and delivery costs. Your order must be paid before you receive it.'
+      save: 'Tap a heart to save a find to your <a href="#wishlist">Wishlist</a>. Your wishlist and bag stay saved in this browser.',
+      pay: 'Open the item, choose a size if needed, and add it to <a href="#bag">My bag</a>. Choose pickup, meetup, or delivery and email your request. Pay in full before receiving your items.'
     };
     cards('fawn-answer').innerHTML = answers[button.dataset.help];
   }
@@ -472,6 +465,54 @@ cards('suggestion-form').addEventListener('submit', event => {
   }
   openEmail('Ribbon & Fawn suggestion', message);
   cards('suggestion-status').textContent = 'Send your suggestion from your email app.';
+});
+
+const fawnAliases = {
+  'pink-ballet-flats': /\b(ballet|flats?|ballerinas?)\b/,
+  'pink-bow-mary-janes': /\bmary\s*jane[s]?\b/,
+  'pink-bow-platform-heels': /\b(platforms?|heels?)\b/,
+  'pink-lace-knit-sweater': /\b(sweaters?|knits?|tops?|shirt)\b/,
+  'white-stockings': /\b(stockings?|tights|leggings)\b/,
+  'cream-leg-warmers': /\bleg\s*warmers?\b/
+};
+
+function answerFawn(question) {
+  const words = question.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim();
+  const items = finds.filter(item => fawnAliases[item.id]?.test(words));
+  const asksPrice = /\b(price|prices|cost|costs|much|total|bd[d]?|budget)\b/.test(words);
+  const asksSize = /\b(size|sizes|sizing|fit)\b/.test(words);
+  const productLinks = products => '<ul>' + products.map(item => {
+    const price = orderSettings.pricesInCents[item.id];
+    return `<li><a href="#item/${item.id}">${item.name}</a>${asksPrice ?
+      ' · ' + (Number.isInteger(price) ? money(price) : 'Price on request') : ''}</li>`;
+  }).join('') + '</ul>';
+
+  if (items.length) return (asksSize ? 'Open the item to see its size choices.' :
+    asksPrice ? 'Here’s what I found.' : 'Take a look at these pieces.') + productLinks(items);
+  if (/\b(shipping|delivery|deliver|pickup|pick up|meetup|meet up)\b/.test(words)) {
+    return 'Choose pickup, meetup, or delivery in <a href="#bag">My Bag</a>. Any applicable fee is confirmed with your order.';
+  }
+  if (/\b(pay|payment|order|checkout|buy|receipt|reference|bag|cart)\b/.test(words)) {
+    return 'Add items from their product pages, then open <a href="#bag">My Bag</a> for your RF reference and email request. Full payment is due before you receive your items.';
+  }
+  if (/\b(contact|email|whatsapp|phone|help)\b/.test(words)) {
+    return 'You can reach Ribbon &amp; Fawn by email or WhatsApp on the <a href="#contact">Contact page</a>.';
+  }
+  if (/\b(wishlist|save|favourites|favorites)\b/.test(words)) {
+    return 'Tap the heart on any item. Your <a href="#wishlist">Wishlist</a> is saved in this browser.';
+  }
+  if (/\b(quiz|aesthetic|aesthetics)\b/.test(words)) return 'Try the <a href="#style-quiz">Style Quiz</a> to find your main aesthetic and runner-up.';
+  if (/\b(outfit|mannequin|wardrobe|dressing|style)\b/.test(words)) return 'Try styling pieces in the <a href="#dressing-room">Dressing Room</a>.';
+  if (/\b(shoes|sneakers|footwear)\b/.test(words)) return 'Here are the shoes in the shop.' + productLinks(finds.filter(item => item.category === 'Shoes'));
+  if (asksPrice) return 'Try asking about a specific piece, or open <a href="#finds">Shopping Finds</a> to see listed prices.';
+  if (asksSize) return 'Click a product photo to see its size choices. Try asking me where to find a specific piece.';
+  return 'Try “How much are the Mary Janes?”, “Where do I choose a size?”, or “Can I pick up my order?”';
+}
+
+cards('fawn-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const question = cards('fawn-question').value.trim();
+  if (question) cards('fawn-answer').innerHTML = answerFawn(question);
 });
 
 renderBag();
