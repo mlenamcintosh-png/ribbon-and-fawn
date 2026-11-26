@@ -75,6 +75,7 @@
 
   function render() {
     const pieces = [...state.closet, ...shop];
+    byId('closet-empty').hidden = state.closet.length > 0;
     byId('closet-pieces').replaceChildren(...state.closet.map(piece => pieceCard(piece)));
     byId('dressing-finds').replaceChildren(...shop.map(piece => pieceCard(piece)));
     const board = state.board.map(id => pieces.find(piece => piece.id === id)).filter(Boolean);
@@ -129,7 +130,12 @@
     try {
       const image = await photoPreview(data.get('photo'));
       const piece = { id: crypto.randomUUID(), name, category: data.get('category'), image };
-      if (commit({ ...state, closet: [...state.closet, piece] }, name + ' added to your closet.')) closetForm.reset();
+      if (commit({ ...state, closet: [...state.closet, piece] }, name + ' hung in your wardrobe.')) {
+        closetForm.reset();
+        byId('wardrobe').open = true;
+        byId('closet-drawer').open = false;
+        byId('closet-pieces').lastElementChild.querySelector('button').focus();
+      }
     } catch (error) {
       status.textContent = error instanceof DOMException ? 'That photo could not be opened. Try a different photo.' : error.message;
     } finally {

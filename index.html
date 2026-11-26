@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=stockings-square">
-<script src="app.js?v=leg-warmers-white" defer></script>
-<script src="dressing-room.js?v=1" defer></script>
+<link rel="stylesheet" href="style.css?v=wardrobe">
+<script src="app.js?v=wardrobe" defer></script>
+<script src="dressing-room.js?v=2" defer></script>
 </head>
 <body>
 <div class="lace" aria-hidden="true"></div>
@@ -112,7 +112,15 @@
     </div>
     <div class="dressing-layout">
       <div class="closet-panel">
-        <h2>My closet</h2>
+        <details class="wardrobe" id="wardrobe" open>
+          <summary>My wardrobe</summary>
+          <div class="wardrobe-interior">
+            <p id="closet-empty">Your rack is empty. Add a photo to hang up your first piece.</p>
+            <div id="closet-pieces" class="dressing-pieces"></div>
+          </div>
+        </details>
+        <details class="closet-drawer" id="closet-drawer">
+          <summary>Add clothes to my wardrobe</summary>
         <form id="closet-form">
           <label>Piece name <input name="name" maxlength="60" required placeholder="Cream cardigan"></label>
           <label>Category <select name="category">
@@ -122,9 +130,11 @@
           <label>Photo <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required></label>
           <button class="ribbon-button">Add to my closet</button>
         </form>
-        <div id="closet-pieces" class="dressing-pieces"></div>
-        <h2>Style with shop finds</h2>
-        <div id="dressing-finds" class="dressing-pieces"></div>
+        </details>
+        <details class="closet-drawer">
+          <summary>Style with shop finds</summary>
+          <div id="dressing-finds" class="dressing-pieces"></div>
+        </details>
       </div>
       <div class="outfit-panel">
         <h2>My outfit board</h2>
