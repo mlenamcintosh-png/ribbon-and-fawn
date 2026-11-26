@@ -189,3 +189,18 @@ body{padding-bottom:36px}
 .mannequin-fit .fitted-warmers span{top:70%;height:14%;width:13%}
 .mannequin-fit .fitted-warmers span:first-child{left:35%}
 .mannequin-fit .fitted-warmers span:last-child{right:35%}
+
+.music-controls{margin-top:10px}
+#music-status:empty{display:none}
+#music-status{margin:5px 0;font-size:.9rem}
+.site-music{margin-top:12px}
+.site-music iframe{display:block;width:min(100%,480px);height:max(200px,min(54vw,270px));border:0}
+.style-collection,.quiz-match{margin:12px 0;padding:12px;border:1px solid var(--line);border-top:7px solid var(--collection-color,var(--pink));background:var(--cream)}
+.style-swatches{display:flex;min-height:32px;border-radius:6px;overflow:hidden}
+.style-swatches i{flex:1}
+.style-collection h2{margin:8px 0 0}
+.quiz-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.quiz-choices button{display:grid;gap:8px;padding:8px;border:1px solid var(--line);background:#fff8fa}
+.quiz-choices button:hover{background:var(--pink)}
+#closet-delete-dialog{max-width:min(430px,calc(100% - 28px));border:3px double var(--line);background:var(--cream);color:var(--ink)}
+#closet-delete-dialog::backdrop{background:#663e5066}

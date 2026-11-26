@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A pink scrapbook for shopping finds and little journal entries.">
 <title>Ribbon &amp; Fawn</title>
-<link rel="stylesheet" href="style.css?v=tailored-mannequin">
-<script src="app.js?v=wardrobe" defer></script>
-<script src="dressing-room.js?v=7" defer></script>
+<link rel="stylesheet" href="style.css?v=style-studio">
+<script src="app.js?v=style-studio" defer></script>
+<script src="dressing-room.js?v=8" defer></script>
+<script src="style-studio.js" defer></script>
 </head>
 <body>
 <div class="lace" aria-hidden="true"></div>
@@ -16,7 +17,7 @@
   <span class="ornament" aria-hidden="true">✧ ♡ ✧</span>
   <p class="brand">Ribbon <i>&amp;</i> Fawn</p>
   <p class="tagline">Shopping finds &amp; journal notes</p>
-</header>
+<div class="music-controls"><button class="ribbon-button" id="music-play" type="button">♫ Play music</button> <button class="ribbon-button" id="music-mute" type="button" disabled>Mute</button><p id="music-status" role="status"></p></div></header>
 <div class="spread">
 <aside aria-label="Scrapbook sidebar">
   <div class="sidebar-card">
@@ -25,7 +26,7 @@
       <a href="#home">Home</a>
       <a href="#finds">Shopping finds</a>
       <a href="#dressing-room">Dressing Room</a>
-      <a href="#journal">Journal</a>
+      <a href="#journal">Journal</a><a href="#aesthetics">Aesthetics</a><a href="#style-quiz">Style quiz</a>
       <a href="#bag">My bag <span id="bag-count">0</span></a>
       <a href="#suggestions">Suggestions</a>
       <a href="#wishlist">Wishlist <span id="count">0</span></a>
@@ -178,9 +179,10 @@
     <p class="dressing-note">Closet photos and saved outfits stay in this browser.</p>
     <p id="dressing-status" role="status"></p>
   </section>
-</main>
+<section id="aesthetics" class="framed inner" data-page hidden><h1>Explore aesthetics</h1><p>Find a new mood or take the <a href="#style-quiz">style quiz</a>.</p><div id="aesthetic-collections"></div></section>
+<section id="style-quiz" class="framed inner" data-page hidden><h1>What’s your style?</h1><div id="quiz-content"></div></section></main>
 </div>
-<footer>Ribbon &amp; Fawn <span aria-hidden="true">♡</span></footer>
+<section id="site-music" class="framed inner site-music" hidden aria-label="YouTube music player"><h2>Ribbon &amp; Fawn soundtrack</h2><div id="music-player"></div><a href="https://youtu.be/jcPmCOUrwNA" target="_blank" rel="noopener noreferrer">Open the track on YouTube</a></section><footer>Ribbon &amp; Fawn <span aria-hidden="true">♡</span></footer>
 </div>
 <details class="fawn-help">
   <summary><span aria-hidden="true">🦌</span> Ask Fawn</summary>
@@ -192,5 +194,5 @@
     <p id="fawn-answer" aria-live="polite"></p>
   </div>
 </details>
-</body>
+<dialog id="closet-delete-dialog" aria-labelledby="closet-delete-title" aria-describedby="closet-delete-warning"><h2 id="closet-delete-title">Delete this wardrobe piece?</h2><p id="closet-delete-warning"></p><form method="dialog"><button class="ribbon-button" value="cancel" autofocus>Cancel</button> <button class="ribbon-button" value="delete">Delete piece</button></form></dialog></body>
 </html>

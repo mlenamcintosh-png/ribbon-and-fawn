@@ -135,6 +135,7 @@ function refresh() {
   renderCards(cards('featured'), finds);
   renderCards(cards('catalog'), finds.filter(item => activeFilter === 'All' || item.category === activeFilter));
   renderCards(cards('saved'), finds.filter(item => saved.has(item.id)));
+  document.dispatchEvent(new Event('fawn-catalog-update'));
 }
 
 function showPage(moveFocus = false) {

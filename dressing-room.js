@@ -40,6 +40,35 @@
     return element;
   }
 
+  const deleteDialog = byId('closet-delete-dialog');
+  let pendingDeletion;
+  function confirmDeletion(piece, trigger) {
+    const affected = state.outfits.filter(outfit => outfit.pieces.includes(piece.id)).map(outfit => outfit.name);
+    byId('closet-delete-warning').textContent = `“${piece.name}” will be permanently deleted from your wardrobe and removed from your current outfit and any saved outfits that use it.` +
+      (affected.length ? ' Affected outfits: ' + affected.join(', ') + '.' : '');
+    pendingDeletion = { piece, trigger };
+    deleteDialog.returnValue = 'cancel';
+    deleteDialog.showModal();
+  }
+
+  deleteDialog.addEventListener('close', () => {
+    if (!pendingDeletion) return;
+    const { piece, trigger } = pendingDeletion;
+    pendingDeletion = undefined;
+    if (deleteDialog.returnValue !== 'delete') {
+      trigger.focus();
+      return;
+    }
+    const closet = state.closet.filter(item => item.id !== piece.id);
+    const board = state.board.filter(id => id !== piece.id);
+    const outfits = state.outfits.map(outfit => ({
+      ...outfit, pieces: outfit.pieces.filter(id => id !== piece.id)
+    }));
+    if (commit({ ...state, closet, board, outfits }, 'Deleted ' + piece.name + ' from your wardrobe and outfits.')) {
+      byId('wardrobe').querySelector('summary').focus();
+    } else trigger.focus();
+  });
+
   function pieceCard(piece, onBoard = false) {
     const element = document.createElement('div');
     element.className = 'dressing-piece';
@@ -71,6 +100,10 @@
       }, onBoard ? undefined : included);
     if (!onBoard) toggle.dataset.piece = piece.id;
     element.append(label, category, toggle);
+    if (!onBoard && !piece.id.startsWith('shop-')) {
+      const remove = button('Delete', 'Delete ' + piece.name + ' from wardrobe', () => confirmDeletion(piece, remove));
+      element.append(remove);
+    }
     return element;
   }
 
