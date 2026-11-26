@@ -162,7 +162,6 @@ body{padding-bottom:36px}
 .mannequin-options{display:grid;gap:5px;margin:0 0 12px;padding:9px;border:1px solid var(--line);background:#fff8fb}
 .mannequin-options legend{font:700 1rem 'Fraunces',Georgia,serif;color:var(--berry)}
 #dressing-room .mannequin-options input[type=range]{accent-color:#a45479;padding:0;background:none;border:0}
-.tone-preview{width:1.4rem;height:1.4rem;border:1px solid #a97691;border-radius:50%}
 .mannequin-fit{position:absolute;inset:0;transform:scaleX(var(--body-size,1))}
 .mannequin-fit .dress-form-body,.mannequin-fit .dress-form-neck,.mannequin-fit .form-arm,.mannequin-fit .form-leg,.mannequin-fit .form-foot{background:linear-gradient(90deg,color-mix(in srgb,var(--skin) 78%,black),var(--skin) 50%,color-mix(in srgb,var(--skin) 86%,black))}
 .mannequin-fit .dress-form-body{clip-path:polygon(50% 0,76% 3%,88% 10%,87% 28%,calc(100% - var(--waist-inset)) 47%,calc(100% - var(--waist-inset)) 58%,88% 77%,92% 95%,77% 100%,23% 100%,8% 95%,12% 77%,var(--waist-inset) 58%,var(--waist-inset) 47%,13% 28%,12% 10%,24% 3%);transform:scaleX(var(--shoulders))}
@@ -177,3 +176,16 @@ body{padding-bottom:36px}
 .mannequin-fit .fitted-warmers span:first-child{left:33%}
 .mannequin-fit .fitted-warmers span:last-child{right:33%}
 .mannequin-fit .fitted-flats span,.mannequin-fit .fitted-mary-janes span,.mannequin-fit .fitted-heels span{width:15%}
+
+.mannequin-fit{--skin:#f1d7c5}
+.mannequin-fit .tailored-sweater{top:14%;left:11%;width:78%;height:34%;z-index:5}
+.mannequin-fit.wearing-sweater .form-arm{visibility:hidden}
+.mannequin-fit.wearing-sweater .dress-form-body{height:30%}
+.mannequin-fit.wearing-stockings .form-leg{background:linear-gradient(90deg,#d7cccb,#fffaf7 50%,#e3d8d6)}
+.mannequin-fit.wearing-stockings .form-foot{background:linear-gradient(90deg,#d7cccb,#fffaf7 50%,#e3d8d6)}
+.mannequin-fit.wearing-shoes .form-foot{visibility:hidden}
+.mannequin-fit .fitted-flats span,.mannequin-fit .fitted-mary-janes span,.mannequin-fit .fitted-heels span{top:auto;bottom:10%;height:8.5%}
+.mannequin-fit .fitted-heels span{height:10%}
+.mannequin-fit .fitted-warmers span{top:70%;height:14%;width:13%}
+.mannequin-fit .fitted-warmers span:first-child{left:35%}
+.mannequin-fit .fitted-warmers span:last-child{right:35%}

@@ -76,35 +76,47 @@
 
   const fitKey = 'ribbon-fawn-mannequin-fit';
   const sizes = ['Very slim', 'Slim', 'Small', 'Medium', 'Full', 'Large', 'Extra large'];
-  const tones = ["#f9e9e2","#f3d9ca","#edc7b1","#dfad92","#ca9475","#b77e60","#9e654a","#845139","#6e402e","#573126","#40241d","#2b1714"];
   const shapes = {
     balanced: [1, 1, 1], straight: [0.94, 1.18, 0.91], curved: [1.05, 0.83, 1.12],
     hips: [0.9, 0.94, 1.2], shoulders: [1.16, 1.02, 0.9], rounded: [1, 1.33, 1.05]
   };
   const sizeControl = byId('mannequin-size');
   const shapeControl = byId('mannequin-shape');
-  const toneControl = byId('mannequin-tone');
   try {
     const fit = JSON.parse(localStorage.getItem(fitKey));
     if (Number.isFinite(fit?.size)) sizeControl.value = fit.size;
     if (Object.hasOwn(shapes, fit?.shape)) shapeControl.value = fit.shape;
-    if (tones[fit?.tone]) toneControl.value = fit.tone;
   } catch {
     // Use the controls' defaults when no saved preferences are available.
+  }
+
+  function tailorSweater() {
+    const canvas = byId('dress-form-layers').querySelector('.tailored-sweater');
+    if (!canvas || !canvas.sourceImage?.complete || !canvas.sourceImage.naturalWidth) return;
+    const source = canvas.sourceImage;
+    const context = canvas.getContext('2d');
+    const [shoulders, waist, hips] = shapes[shapeControl.value];
+    const bands = [shoulders, shoulders, (shoulders + waist) / 2, waist, (waist + hips) / 2];
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    for (let row = 0; row < canvas.height; row++) {
+      const progress = row / (canvas.height - 1) * (bands.length - 1);
+      const band = Math.min(bands.length - 2, Math.floor(progress));
+      const width = canvas.width * 0.77 * (bands[band] + (bands[band + 1] - bands[band]) * (progress - band));
+      context.drawImage(source, 0, row / canvas.height * source.naturalHeight, source.naturalWidth,
+        source.naturalHeight / canvas.height, (canvas.width - width) / 2, row, width, 1);
+    }
   }
 
   function applyFit() {
     const size = Number(sizeControl.value);
     const shape = shapeControl.value;
-    const tone = Number(toneControl.value);
     const [shoulders, waist, hips] = shapes[shape];
+    tailorSweater();
     const style = byId('mannequin-fit').style;
     style.setProperty('--body-size', 0.76 + size * 0.0048);
     style.setProperty('--shoulders', shoulders);
     style.setProperty('--hips', hips);
     style.setProperty('--waist-inset', (50 - 25 * waist) + '%');
-    style.setProperty('--skin', tones[tone]);
-    byId('mannequin-tone-preview').style.backgroundColor = tones[tone];
     const sizeName = sizes[Math.round(size / 100 * (sizes.length - 1))];
     byId('mannequin-size-value').textContent = sizeName;
     sizeControl.setAttribute('aria-valuetext', sizeName);
@@ -114,7 +126,7 @@
     applyFit();
     try {
       localStorage.setItem(fitKey, JSON.stringify({
-        size: Number(sizeControl.value), shape: shapeControl.value, tone: Number(toneControl.value)
+        size: Number(sizeControl.value), shape: shapeControl.value
       }));
     } catch {
       // The preview remains adjustable when storage is unavailable.
@@ -138,6 +150,10 @@
         fitted === 'warmers' || piece.category === 'Leg warmers' ? 'warmers' : slots[piece.category];
       if (slot && (piece.cutout || piece.image)) layers.set(slot, piece);
     });
+    const mannequin = byId('mannequin-fit');
+    mannequin.classList.toggle('wearing-sweater', layers.get('top')?.id === 'shop-pink-lace-knit-sweater');
+    mannequin.classList.toggle('wearing-stockings', layers.get('stockings')?.id === 'shop-white-stockings');
+    mannequin.classList.toggle('wearing-shoes', layers.has('shoes'));
     const clothes = [...layers].map(([slot, piece]) => {
       const fitted = fittedPieces[piece.id];
       if (fitted) {
@@ -149,6 +165,18 @@
         pair.append(document.createElement('span'), document.createElement('span'));
         return pair;
       }
+      if (piece.id === 'shop-pink-lace-knit-sweater') {
+        const canvas = document.createElement('canvas');
+        canvas.className = 'dress-layer tailored-sweater';
+        canvas.width = 360;
+        canvas.height = 300;
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', piece.name);
+        canvas.sourceImage = new Image();
+        canvas.sourceImage.addEventListener('load', tailorSweater);
+        canvas.sourceImage.src = piece.cutout;
+        return canvas;
+      }
       const image = document.createElement('img');
       image.className = 'dress-layer dress-layer-' + slot;
       if (!piece.cutout && piece.id.startsWith('shop-')) image.classList.add('dress-layer-photo');
@@ -157,6 +185,7 @@
       return image;
     });
     byId('dress-form-layers').replaceChildren(...clothes);
+    tailorSweater();
   }
 
   function render() {
